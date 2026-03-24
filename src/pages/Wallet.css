@@ -123,3 +123,78 @@
   text-align: center;
   border: 1px dashed var(--glass-border);
 }
+
+/* Withdrawal form styling */
+.withdraw-form {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(26, 29, 39, 0.9), rgba(39, 42, 54, 0.95));
+}
+
+.input-field {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 15px var(--accent-primary-dim);
+}
+
+.input-field::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* Webkit spin buttons removal */
+.input-field::-webkit-inner-spin-button, 
+.input-field::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.w-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.w-btn:active {
+  transform: scale(0.96);
+}
+
+.w-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.w-btn-primary {
+  background: var(--accent-primary);
+  color: #0d0f14;
+  box-shadow: 0 4px 15px var(--accent-primary-dim);
+}
+
+.w-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+}

@@ -121,24 +121,28 @@ export default function Wallet() {
               <div style={{ 
                 color: message.type === 'error' ? '#ff4d4d' : '#4ade80', 
                 fontSize: '14px', 
-                marginBottom: '15px' 
+                textAlign: 'center',
+                padding: '8px',
+                borderRadius: '8px',
+                background: message.type === 'error' ? 'rgba(255, 77, 77, 0.1)' : 'rgba(74, 222, 128, 0.1)',
+                marginBottom: '4px' 
               }}>
                 {message.text}
               </div>
             )}
             
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
               <button 
-                className="go-btn" 
-                style={{ flex: 1, padding: '12px', background: 'var(--glass-bg)', color: 'var(--text-primary)' }}
+                className="w-btn w-btn-secondary" 
+                style={{ flex: 1 }}
                 onClick={() => setWithdrawMethod(null)}
                 disabled={loading}
               >
                 Cancel
               </button>
               <button 
-                className="go-btn" 
-                style={{ flex: 2, padding: '12px' }}
+                className="w-btn w-btn-primary" 
+                style={{ flex: 1 }}
                 onClick={handleWithdraw}
                 disabled={loading}
               >
