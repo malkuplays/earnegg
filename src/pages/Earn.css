@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: space-between;
   padding-top: 10vh;
-  padding-bottom: 110px; /* Accounts for bottom nav so energy bar isn't hidden */
+  /* padding-bottom is handled by the global .page-container class */
 }
 
 .balance-container {
