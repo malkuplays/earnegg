@@ -1,10 +1,11 @@
 import { ArrowRightLeft, CreditCard } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 import './Wallet.css';
 
 export default function Wallet() {
-  const DUMMY_BALANCE = 24500;
+  const { balance } = useApp();
   // Let's say 10000 coins = $1.00
-  const MONEY_CONVERSION = DUMMY_BALANCE / 10000;
+  const MONEY_CONVERSION = balance / 10000;
 
   return (
     <div className="page-container wallet-page animate-fade-in">
@@ -12,7 +13,7 @@ export default function Wallet() {
         <h2 className="caption text-dim">Current Balance</h2>
         <div className="wallet-balance-row">
           <span className="coin-large">💰</span>
-          <span className="wallet-balance">{DUMMY_BALANCE.toLocaleString()}</span>
+          <span className="wallet-balance">{balance.toLocaleString()}</span>
         </div>
         <div className="usd-equivalent">
           ~ ${MONEY_CONVERSION.toFixed(2)} USD

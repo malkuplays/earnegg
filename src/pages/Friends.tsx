@@ -1,15 +1,47 @@
 import { Gift, Copy, Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { useApp } from '../context/AppContext';
 import './Friends.css';
 
-const DUMMY_FRIENDS = [
-  { id: 1, name: 'Alex Johnson', reward: 5000 },
-  { id: 2, name: 'Maria Silva', reward: 5000 },
-];
-
 export default function Friends() {
+  const { user } = useApp();
   const [copied, setCopied] = useState(false);
-  const inviteLink = "https://t.me/earnegg_bot?start=ref123";
+  const [friends, setFriends] = useState<any[]>([]);
+
+  // Real invite link leveraging Telegram start param
+  const inviteLink = user?.id 
+    ? `https://t.me/earnegg_bot?start=ref_${user.id}`
+    : "https://t.me/earnegg_bot";
+
+  useEffect(() => {
+    if (user?.id) fetchReferrals();
+  }, [user]);
+
+  const fetchReferrals = async () => {
+    const { data: refs } = await supabase
+      .from('referrals')
+      .select('*')
+      .eq('referrer_id', user.id.toString());
+      
+    if (refs && refs.length > 0) {
+      const friendIds = refs.map((r: any) => r.referred_id);
+      const { data: players } = await supabase
+        .from('players')
+        .select('id, username')
+        .in('id', friendIds);
+        
+      const merged = refs.map((r: any) => {
+        const p = players?.find((pl: any) => pl.id === r.referred_id);
+        return {
+          id: r.referred_id,
+          name: p?.username || 'Unknown Friend',
+          reward: r.reward
+        };
+      });
+      setFriends(merged);
+    }
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(inviteLink);
@@ -37,14 +69,14 @@ export default function Friends() {
       </div>
 
       <div className="friends-list-container">
-        <h3 className="h3 section-title">Your Friends ({DUMMY_FRIENDS.length})</h3>
+        <h3 className="h3 section-title">Your Friends ({friends.length})</h3>
         
         <div className="friends-list">
-          {DUMMY_FRIENDS.length > 0 ? (
-            DUMMY_FRIENDS.map(friend => (
+          {friends.length > 0 ? (
+            friends.map(friend => (
               <div key={friend.id} className="friend-card glass-panel">
                 <div className="friend-avatar">
-                  {friend.name.charAt(0)}
+                  {friend.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="friend-info">
                   <span className="friend-name">{friend.name}</span>

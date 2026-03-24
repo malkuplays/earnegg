@@ -1,14 +1,56 @@
 import './Tasks.css';
 import { CheckCircle2, ChevronRight, Play } from 'lucide-react';
 
-const DUMMY_TASKS = [
-  { id: 1, title: 'Join Official Channel', reward: 5000, type: 'telegram', completed: false },
-  { id: 2, title: 'Follow us on X (Twitter)', reward: 2000, type: 'social', completed: false },
-  { id: 3, title: 'Connect Wallet', reward: 10000, type: 'action', completed: true },
-  { id: 4, title: 'Invite 3 Friends', reward: 15000, type: 'invite', completed: false },
-];
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { useApp } from '../context/AppContext';
 
 export default function Tasks() {
+  const { user } = useApp();
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [loadingTask, setLoadingTask] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (user?.id) fetchTasks();
+  }, [user]);
+
+  const fetchTasks = async () => {
+    // Fetch all available tasks
+    const { data: allTasks } = await supabase.from('tasks').select('*');
+    
+    // Fetch completed tasks for current user
+    const { data: completed } = await supabase
+      .from('player_tasks')
+      .select('task_id')
+      .eq('player_id', user.id.toString());
+      
+    const completedIds = completed?.map((c: any) => c.task_id) || [];
+    
+    if (allTasks) {
+      setTasks(allTasks.map(t => ({
+        ...t,
+        completed: completedIds.includes(t.id)
+      })));
+    }
+  };
+
+  const completeTask = async (taskId: number) => {
+    if (!user?.id) return;
+    setLoadingTask(taskId);
+    
+    const { data, error } = await supabase.rpc('complete_task', {
+      p_player_id: user.id.toString(),
+      p_task_id: taskId
+    });
+    
+    if (data && !error) {
+      // Refresh local tasks visually
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, completed: true } : t));
+      // Re-fetch balance by just refreshing the window or handling local state up
+      // In a real app we would use Context carefully, but page reload is fine for MVP
+    }
+    setLoadingTask(null);
+  };
   return (
     <div className="page-container tasks-page animate-fade-in">
       <div className="page-header">
@@ -17,7 +59,7 @@ export default function Tasks() {
       </div>
 
       <div className="tasks-list">
-        {DUMMY_TASKS.map(task => (
+        {tasks.map(task => (
           <div key={task.id} className={`task-card glass-panel ${task.completed ? 'completed' : ''}`}>
             
             <div className="task-icon-wrapper">
@@ -40,7 +82,13 @@ export default function Tasks() {
               {task.completed ? (
                 <span className="caption text-success">Done</span>
               ) : (
-                <button className="go-btn"><ChevronRight size={20} /></button>
+                <button 
+                  className="go-btn" 
+                  onClick={() => completeTask(task.id)}
+                  disabled={loadingTask === task.id}
+                >
+                  <ChevronRight size={20} />
+                </button>
               )}
             </div>
             
