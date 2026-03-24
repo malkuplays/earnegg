@@ -56,8 +56,27 @@ export default function Earn() {
           ref={eggRef}
           className="interactive-egg"
           onPointerDown={handlePointerDown}
-          whileTap={{ scale: 0.95, rotate: [0, -2, 2, -1, 1, 0] }}
-          transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+          animate={{
+            boxShadow: [
+              "inset -10px -10px 40px rgba(0,0,0,0.5), 0 0 40px rgba(240, 201, 41, 0.2), 0 20px 40px rgba(0,0,0,0.4)",
+              "inset -10px -10px 40px rgba(0,0,0,0.5), 0 0 80px rgba(240, 201, 41, 0.8), 0 20px 40px rgba(0,0,0,0.6)",
+              "inset -10px -10px 40px rgba(0,0,0,0.5), 0 0 40px rgba(240, 201, 41, 0.2), 0 20px 40px rgba(0,0,0,0.4)"
+            ],
+            scale: [1, 1.02, 1],
+            y: [0, -5, 0]
+          }}
+          transition={{
+            duration: 4,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "loop"
+          }}
+          whileTap={{ 
+            scale: 0.92, 
+            rotate: [0, -4, 4, -2, 2, 0], 
+            y: 0,
+            transition: { type: 'spring', stiffness: 400, damping: 10 } 
+          }}
           style={{ touchAction: 'none' }} // crucial for multi-touch prevent-scrolling
         >
           {/* We use an emoji for simplicity, but could be an image */}

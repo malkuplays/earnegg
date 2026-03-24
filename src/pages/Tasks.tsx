@@ -2,8 +2,23 @@ import './Tasks.css';
 import { CheckCircle2, ChevronRight, Play } from 'lucide-react';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { useApp } from '../context/AppContext';
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+};
 
 export default function Tasks() {
   const { user } = useApp();
@@ -58,9 +73,18 @@ export default function Tasks() {
         <p className="body text-dim">Complete simple tasks to earn massive coin rewards.</p>
       </div>
 
-      <div className="tasks-list">
+      <motion.div 
+        className="tasks-list"
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+      >
         {tasks.map(task => (
-          <div key={task.id} className={`task-card glass-panel ${task.completed ? 'completed' : ''}`}>
+          <motion.div 
+            variants={itemVariants}
+            key={task.id} 
+            className={`task-card glass-panel ${task.completed ? 'completed' : ''}`}
+          >
             
             <div className="task-icon-wrapper">
               {task.completed ? (
@@ -92,9 +116,9 @@ export default function Tasks() {
               )}
             </div>
             
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }

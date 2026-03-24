@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import WebApp from '@twa-dev/sdk';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { AppProvider } from './context/AppContext';
 import { getTelegramUser } from './lib/telegram';
 
@@ -12,8 +12,25 @@ import Wallet from './pages/Wallet';
 
 // Components
 import BottomNav from './components/BottomNav';
+import PageTransition from './components/PageTransition';
 
 import './App.css';
+
+function AppRoutes() {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Navigate to="/earn" replace />} />
+        <Route path="/earn" element={<PageTransition><Earn /></PageTransition>} />
+        <Route path="/tasks" element={<PageTransition><Tasks /></PageTransition>} />
+        <Route path="/friends" element={<PageTransition><Friends /></PageTransition>} />
+        <Route path="/wallet" element={<PageTransition><Wallet /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 function App() {
   const [tgUser, setTgUser] = useState<any>(null);
@@ -21,7 +38,8 @@ function App() {
 
   useEffect(() => {
     // Notify Telegram that the app has loaded
-    WebApp?.ready?.();
+    const app = (window as any).Telegram?.WebApp;
+    app?.ready?.();
     
     // Allow SDK to parse URL hash on iOS devices before validating
     setTimeout(() => {
@@ -31,7 +49,7 @@ function App() {
       
       if (user) {
         // Expands the WebApp to take the full screen
-        WebApp?.expand?.();
+        app?.expand?.();
       }
     }, 100);
   }, []);
@@ -60,13 +78,6 @@ function App() {
         }}>
           Open Telegram Bot
         </a>
-        
-        {/* Debug Info */}
-        <div style={{ marginTop: '40px', fontSize: '10px', color: '#555', wordBreak: 'break-all', maxWidth: '300px', textAlign: 'left' }}>
-          <p>Debug payload:</p>
-          <pre>{JSON.stringify(WebApp?.initDataUnsafe || {}, null, 2)}</pre>
-          <p>User Agent: {navigator.userAgent}</p>
-        </div>
       </div>
     );
   }
@@ -75,13 +86,7 @@ function App() {
     <AppProvider>
       <BrowserRouter>
         <div className="app-layout">
-          <Routes>
-            <Route path="/" element={<Navigate to="/earn" replace />} />
-            <Route path="/earn" element={<Earn />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/friends" element={<Friends />} />
-            <Route path="/wallet" element={<Wallet />} />
-          </Routes>
+          <AppRoutes />
           
           {/* Persistent Bottom Nav */}
           <BottomNav />

@@ -1,8 +1,23 @@
 import { Gift, Copy, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { useApp } from '../context/AppContext';
 import './Friends.css';
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+};
 
 export default function Friends() {
   const { user } = useApp();
@@ -71,10 +86,15 @@ export default function Friends() {
       <div className="friends-list-container">
         <h3 className="h3 section-title">Your Friends ({friends.length})</h3>
         
-        <div className="friends-list">
+        <motion.div 
+          className="friends-list"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+        >
           {friends.length > 0 ? (
             friends.map(friend => (
-              <div key={friend.id} className="friend-card glass-panel">
+              <motion.div variants={itemVariants} key={friend.id} className="friend-card glass-panel">
                 <div className="friend-avatar">
                   {friend.name.charAt(0).toUpperCase()}
                 </div>
@@ -82,14 +102,14 @@ export default function Friends() {
                   <span className="friend-name">{friend.name}</span>
                   <span className="friend-reward">+{friend.reward.toLocaleString()} coins</span>
                 </div>
-              </div>
+              </motion.div>
             ))
           ) : (
-            <div className="empty-state">
+            <motion.div variants={itemVariants} className="empty-state">
               <span className="text-dim">You haven't invited anyone yet.</span>
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
