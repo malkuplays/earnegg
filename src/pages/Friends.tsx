@@ -11,8 +11,8 @@ export default function Friends() {
 
   // Real invite link leveraging Telegram start param
   const inviteLink = user?.id 
-    ? `https://t.me/earneggbot?start=ref_${user.id}`
-    : "https://t.me/earneggbot";
+    ? `https://t.me/earneggbot/earneager?startapp=ref_${user.id}`
+    : "https://t.me/earneggbot/earneager";
 
   useEffect(() => {
     if (user?.id) fetchReferrals();
