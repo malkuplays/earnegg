@@ -1,0 +1,19 @@
+.floating-assets-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1; /* Stay behind the main UI */
+  overflow: hidden;
+}
+
+.floating-asset {
+  position: absolute;
+  font-size: 2rem;
+  color: var(--accent-primary);
+  opacity: 0.1;
+  filter: drop-shadow(0 0 10px rgba(240, 201, 41, 0.3));
+  text-shadow: 0 0 5px var(--accent-primary);
+}

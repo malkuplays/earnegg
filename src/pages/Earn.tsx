@@ -1,7 +1,9 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
+import { supabase } from '../lib/supabase';
+import FloatingAssets from '../components/FloatingAssets';
 import './Earn.css';
 
 interface ClickParticle {
@@ -13,8 +15,20 @@ interface ClickParticle {
 export default function Earn() {
   const { balance, energy, maxEnergy, handleTap } = useApp();
   const [particles, setParticles] = useState<ClickParticle[]>([]);
+  const [encouragement, setEncouragement] = useState<string>("Keep tapping!");
   const eggRef = useRef<HTMLDivElement>(null);
   const particleIdCounter = useRef(0);
+
+  useEffect(() => {
+    const fetchEncouragement = async () => {
+      const { data } = await supabase.from('encouragements').select('message');
+      if (data && data.length > 0) {
+        const randomMsg = data[Math.floor(Math.random() * data.length)].message;
+        setEncouragement(randomMsg);
+      }
+    };
+    fetchEncouragement();
+  }, []);
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -43,12 +57,15 @@ export default function Earn() {
 
   return (
     <div className="page-container earn-page animate-fade-in">
+      <FloatingAssets />
+      
       <div className="balance-container">
         <h2 className="caption">Coin Balance</h2>
         <div className="balance-amount">
           <span className="coin-icon">💰</span>
           <span className="balance-number">{balance.toLocaleString()}</span>
         </div>
+        <p className="encouragement-text">{encouragement}</p>
       </div>
 
       <div className="egg-container">

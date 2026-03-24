@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: space-between;
   padding-top: 10vh;
+  padding-bottom: 110px; /* Accounts for bottom nav so energy bar isn't hidden */
 }
 
 .balance-container {
@@ -29,6 +30,22 @@
   font-weight: 800;
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
   letter-spacing: -2px;
+}
+
+.encouragement-text {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--accent-primary);
+  opacity: 0.9;
+  font-weight: 600;
+  text-align: center;
+  animation: pulse-encourage 2s infinite alternate;
+  z-index: 2;
+}
+
+@keyframes pulse-encourage {
+  from { filter: drop-shadow(0 0 2px rgba(240, 201, 41, 0.2)); transform: scale(1); }
+  to { filter: drop-shadow(0 0 10px rgba(240, 201, 41, 0.8)); transform: scale(1.02); text-shadow: 0 0 8px rgba(240, 201, 41, 0.5); }
 }
 
 .egg-container {
@@ -77,10 +94,11 @@
 .energy-bar-container {
   width: 100%;
   max-width: 300px;
-  margin-bottom: 20px;
+  margin-bottom: 0px; 
   display: flex;
   flex-direction: column;
   gap: 8px;
+  z-index: 2;
 }
 
 .energy-labels {
