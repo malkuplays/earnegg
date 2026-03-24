@@ -24,10 +24,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     // Init user
-    let tgUser = getTelegramUser();
+    let tgUser: any = getTelegramUser();
     // Fallback for local web testing so Supabase doesn't fail on null ID
     if (!tgUser) {
-      tgUser = { id: 123456789, username: 'tester', first_name: 'Test' };
+      let localId = localStorage.getItem('earnegg_device_id');
+      if (!localId) {
+        localId = 'web_' + Math.floor(Math.random() * 1000000000).toString();
+        localStorage.setItem('earnegg_device_id', localId);
+      }
+      tgUser = { id: localId, username: 'Web Player', first_name: 'Web' };
     }
     setUser(tgUser);
     
@@ -36,7 +41,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const { data, error } = await supabase
         .from('players')
         .select('*')
-        .eq('id', tgUser.id.toString())
+        .eq('id', tgUser?.id?.toString() || '')
         .single();
       
       if (data && !error) {
@@ -69,7 +74,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     console.log(`Syncing ${tapsToSync} taps to database...`);
     
     // Make sure we have a user
-    let currentUserId = user?.id?.toString() || '123456789';
+    let currentUserId = user?.id?.toString() || localStorage.getItem('earnegg_device_id') || '123456789';
     let currentUsername = user?.username || user?.first_name || 'tester';
 
     const { data, error } = await supabase.rpc('sync_taps', { 
