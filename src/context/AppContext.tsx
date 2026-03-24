@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
-import { getTelegramUser } from '../lib/telegram';
+import { getTelegramUser, getTelegramStartParam } from '../lib/telegram';
 import { supabase } from '../lib/supabase';
 
 interface AppContextType {
@@ -36,19 +36,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     setUser(tgUser);
     
-    // Fetch initial user profile from Supabase
+    // Fetch or Register user profile with Supabase securely
     const fetchUser = async () => {
-      const { data, error } = await supabase
-        .from('players')
-        .select('*')
-        .eq('id', tgUser?.id?.toString() || '')
-        .single();
+      const startParam = getTelegramStartParam() || '';
+      const referrerId = startParam.startsWith('ref_') ? startParam.replace('ref_', '') : '';
+      
+      let safeId = tgUser?.id?.toString() || '';
+      let safeName = tgUser?.username || tgUser?.first_name || 'tester';
+
+      const { data, error } = await supabase.rpc('register_player', {
+        p_telegram_id: safeId,
+        p_username: safeName,
+        p_referrer_id: referrerId
+      });
       
       if (data && !error) {
         setBalance(Number(data.balance));
         setEnergy(data.energy);
       } else {
-        // If not found, they haven't tapped yet, keep balance 0, energy 1000
+        // Fallback
         setBalance(0);
         setEnergy(maxEnergy);
       }

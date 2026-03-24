@@ -13,6 +13,14 @@ export const getTelegramUser = () => {
   return null;
 };
 
+export const getTelegramStartParam = () => {
+  try {
+    return WebApp?.initDataUnsafe?.start_param || null;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const hapticFeedback = (style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft' = 'light') => {
   try {
     if (WebApp.HapticFeedback) {
