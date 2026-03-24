@@ -24,16 +24,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     // Init user
-    let tgUser: any = getTelegramUser();
-    // Fallback for local web testing so Supabase doesn't fail on null ID
-    if (!tgUser) {
-      let localId = localStorage.getItem('earnegg_device_id');
-      if (!localId) {
-        localId = 'web_' + Math.floor(Math.random() * 1000000000).toString();
-        localStorage.setItem('earnegg_device_id', localId);
-      }
-      tgUser = { id: localId, username: 'Web Player', first_name: 'Web' };
-    }
+    // Since App.tsx completely blocks non-Telegram traffic, this will always be defined
+    let tgUser: any = getTelegramUser() || { id: 123456789, username: 'tester', first_name: 'Test' };
     setUser(tgUser);
     
     // Fetch or Register user profile with Supabase securely
