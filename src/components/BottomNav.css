@@ -1,0 +1,84 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  height: var(--bottom-nav-height);
+  padding: 0 8px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@supports (padding-bottom: max(0px)) {
+  .bottom-nav {
+    height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  }
+}
+
+.nav-items {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: var(--bottom-nav-height);
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.nav-item.active {
+  color: var(--accent-primary);
+}
+
+.icon-container {
+  display: flex;
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nav-item.active .icon-container {
+  transform: translateY(-4px) scale(1.1);
+}
+
+.nav-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-top: 4px;
+  opacity: 0.7;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.nav-item.active .nav-label {
+  opacity: 1;
+}
+
+/* Optional: Active indicator dot */
+.nav-item::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--accent-primary);
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.nav-item.active::after {
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 0 10px var(--accent-primary);
+}

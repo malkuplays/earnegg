@@ -1,0 +1,125 @@
+.wallet-page {
+  gap: 24px;
+}
+
+.wallet-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+  gap: 8px;
+  margin-top: 16px;
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  border-top-width: 2px;
+  border-top-color: var(--accent-primary-dim);
+}
+
+.wallet-balance-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coin-large {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
+}
+
+.wallet-balance {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-shadow: 0 0 20px var(--accent-primary-dim);
+  letter-spacing: -1px;
+}
+
+.usd-equivalent {
+  font-size: 1.1rem;
+  color: var(--success);
+  font-weight: 600;
+  background: rgba(40, 167, 69, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+
+.withdraw-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.withdraw-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.withdraw-card {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.w-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crypto-icon {
+  background: rgba(240, 201, 41, 0.1);
+  color: var(--accent-primary);
+}
+
+.fiat-icon {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.w-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.w-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.w-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.w-fee {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--success);
+  background: rgba(40, 167, 69, 0.1);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.transaction-history {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.history-empty {
+  background: var(--bg-tertiary);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  border: 1px dashed var(--glass-border);
+}
