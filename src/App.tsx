@@ -16,12 +16,12 @@ function App() {
 
   useEffect(() => {
     // Notify Telegram that the app has loaded
-    WebApp.ready();
+    WebApp?.ready?.();
     
     // Check if we are inside Telegram
-    if (WebApp.initDataUnsafe.user) {
+    if (WebApp?.initDataUnsafe?.user) {
       // Optional: Expands the WebApp to take the full screen
-      WebApp.expand();
+      WebApp?.expand?.();
       
       // Setup telegram theme colors based on CSS variables instead
       // but we force our own premium dark theme in index.css anyway
