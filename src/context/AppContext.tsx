@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { getTelegramUser } from '../lib/telegram';
-// import { supabase } from '../lib/supabase'; // We'd use this if backend was ready
+import { supabase } from '../lib/supabase';
 
 interface AppContextType {
   balance: number;
@@ -24,13 +24,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     // Init user
-    const tgUser = getTelegramUser();
+    let tgUser = getTelegramUser();
+    // Fallback for local web testing so Supabase doesn't fail on null ID
+    if (!tgUser) {
+      tgUser = { id: 123456789, username: 'tester', first_name: 'Test' };
+    }
     setUser(tgUser);
     
-    // In a real scenario, we would fetch the initial user profile from Supabase here
-    // const { data } = await supabase.from('users').select('*').eq('id', tgUser.id).single();
-    // setBalance(data.balance);
-    // setEnergy(data.energy);
+    // Fetch initial user profile from Supabase
+    const fetchUser = async () => {
+      const { data, error } = await supabase
+        .from('players')
+        .select('*')
+        .eq('id', tgUser.id.toString())
+        .single();
+      
+      if (data && !error) {
+        setBalance(Number(data.balance));
+        setEnergy(data.energy);
+      } else {
+        // If not found, they haven't tapped yet, keep balance 0, energy 1000
+        setBalance(0);
+        setEnergy(maxEnergy);
+      }
+    };
+    fetchUser();
     
     // Setup energy regeneration interval
     const interval = setInterval(() => {
@@ -49,9 +67,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     syncTimeoutRef.current = null;
     
     console.log(`Syncing ${tapsToSync} taps to database...`);
-    // Example Supabase call:
-    // await supabase.rpc('increment_coins', { amount: tapsToSync, energy_cost: tapsToSync });
-  }, []);
+    
+    // Make sure we have a user
+    let currentUserId = user?.id?.toString() || '123456789';
+    let currentUsername = user?.username || user?.first_name || 'tester';
+
+    const { data, error } = await supabase.rpc('sync_taps', { 
+      p_telegram_id: currentUserId,
+      p_username: currentUsername,
+      p_taps: tapsToSync,
+      p_max_energy: maxEnergy 
+    });
+
+    if (error) {
+      console.error("Error syncing to Supabase", error);
+    } else if (data) {
+      // Sync local state exactly with what DB calculated, in case of discrepancies
+      const serverBalance = Number(data.balance);
+      const serverEnergy = Number(data.energy);
+      // We only update if we haven't tapped again in the meantime
+      if (pendingTaps.current === 0) {
+        setBalance(serverBalance);
+        setEnergy(serverEnergy);
+      }
+    }
+  }, [user, maxEnergy]);
 
   const handleTap = useCallback(() => {
     if (energy > 0) {
