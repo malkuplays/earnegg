@@ -48,6 +48,13 @@ function App() {
         }}>
           Open Telegram Bot
         </a>
+        
+        {/* Debug Info */}
+        <div style={{ marginTop: '40px', fontSize: '10px', color: '#555', wordBreak: 'break-all', maxWidth: '300px', textAlign: 'left' }}>
+          <p>Debug payload:</p>
+          <pre>{JSON.stringify(WebApp?.initDataUnsafe || {}, null, 2)}</pre>
+          <p>User Agent: {navigator.userAgent}</p>
+        </div>
       </div>
     );
   }
