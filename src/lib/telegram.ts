@@ -1,21 +1,26 @@
 import WebApp from '@twa-dev/sdk';
 
+// Helper to reliably get the native Telegram WebApp object
+const getNativeWebApp = () => {
+  if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp) {
+    return (window as any).Telegram.WebApp;
+  }
+  return WebApp; // Fallback to sdk
+};
+
 export const getTelegramUser = () => {
   try {
-    if (WebApp.initDataUnsafe && WebApp.initDataUnsafe.user) {
-      return WebApp.initDataUnsafe.user;
-    }
+    const app = getNativeWebApp();
+    return app?.initDataUnsafe?.user || null;
   } catch (error) {
-    console.warn("Not running inside Telegram WebApp");
+    return null;
   }
-  
-  // Mock user for local development
-  return null;
 };
 
 export const getTelegramStartParam = () => {
   try {
-    return WebApp?.initDataUnsafe?.start_param || null;
+    const app = getNativeWebApp();
+    return app?.initDataUnsafe?.start_param || null;
   } catch (error) {
     return null;
   }
@@ -23,8 +28,9 @@ export const getTelegramStartParam = () => {
 
 export const hapticFeedback = (style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft' = 'light') => {
   try {
-    if (WebApp.HapticFeedback) {
-      WebApp.HapticFeedback.impactOccurred(style);
+    const app = getNativeWebApp();
+    if (app?.HapticFeedback) {
+      app.HapticFeedback.impactOccurred(style);
     }
   } catch (err) {
     // Ignored

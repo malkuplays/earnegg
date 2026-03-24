@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk';
 import { AppProvider } from './context/AppContext';
@@ -16,17 +16,29 @@ import BottomNav from './components/BottomNav';
 import './App.css';
 
 function App() {
-  const tgUser = getTelegramUser();
+  const [tgUser, setTgUser] = useState<any>(null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     // Notify Telegram that the app has loaded
     WebApp?.ready?.();
     
-    if (tgUser) {
-      // Expands the WebApp to take the full screen
-      WebApp?.expand?.();
-    }
-  }, [tgUser]);
+    // Allow SDK to parse URL hash on iOS devices before validating
+    setTimeout(() => {
+      const user = getTelegramUser();
+      setTgUser(user);
+      setIsReady(true);
+      
+      if (user) {
+        // Expands the WebApp to take the full screen
+        WebApp?.expand?.();
+      }
+    }, 100);
+  }, []);
+
+  if (!isReady) {
+    return <div style={{ backgroundColor: '#0d0f14', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} />;
+  }
 
   // Completely block the application if not opened seamlessly within the Telegram Mobile/Desktop app
   if (!tgUser) {
