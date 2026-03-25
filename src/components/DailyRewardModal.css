@@ -1,9 +1,80 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 9999;
+}
+
 .reward-modal {
   background: var(--bg-secondary);
   overflow: visible;
+  text-align: center;
+  padding: 32px 24px;
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-badge-icon {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-secondary);
+  padding: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-primary-dim);
+  box-shadow: 0 0 30px rgba(240, 201, 41, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .reward-box {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255,255,255,0.05);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  margin-top: 12px;
 }
+
+.reward-coin {
+  font-size: 3rem;
+  display: block;
+}
+
+.reward-amount {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-top: 8px;
+  color: var(--text-primary);
+}
+
+.claim-btn {
+  background: var(--accent-primary);
+  color: #000;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 14px;
+  width: 100%;
+  margin-top: 24px;
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.claim-btn:active {
+  transform: scale(0.98);
+}
+
+.mb-6 { margin-bottom: 24px; }
+.mb-2 { margin-bottom: 8px; }
+.text-warning { color: var(--accent-primary); }
