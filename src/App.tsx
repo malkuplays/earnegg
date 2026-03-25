@@ -104,7 +104,7 @@ function App() {
   }
 
   return (
-    <AppProvider>
+    <AppProvider initialUser={tgUser}>
       <BrowserRouter>
         <div className="app-layout">
           <AppRoutes />

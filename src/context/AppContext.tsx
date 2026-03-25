@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
-import { getTelegramUser, getTelegramStartParam } from '../lib/telegram';
+import { getTelegramStartParam } from '../lib/telegram';
 import { supabase } from '../lib/supabase';
 
 interface DailyRewardData {
@@ -25,10 +25,10 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any }> = ({ children, initialUser }) => {
   const [balance, setBalance] = useState(0);
   const [energy, setEnergy] = useState(1000);
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<any | null>(initialUser);
 
   const [multitapLevel, setMultitapLevel] = useState(1);
   const [energyLimitLevel, setEnergyLimitLevel] = useState(1);
@@ -44,18 +44,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const syncTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Init user
-    // Since App.tsx completely blocks non-Telegram traffic, this will always be defined
-    let tgUser: any = getTelegramUser() || { id: 123456789, username: 'tester', first_name: 'Test' };
-    setUser(tgUser);
+    // Sync internal user state if initialUser changes (though it shouldn't once mounted)
+    if (initialUser && !user) {
+      setUser(initialUser);
+    }
     
     // Fetch or Register user profile with Supabase securely
     const fetchUser = async () => {
+      const activeUser = initialUser || user;
+      if (!activeUser) return;
       const startParam = getTelegramStartParam() || '';
       const referrerId = startParam.startsWith('ref_') ? startParam.replace('ref_', '') : '';
       
-      let safeId = tgUser?.id?.toString() || '';
-      let safeName = tgUser?.username || tgUser?.first_name || 'tester';
+      let safeId = activeUser?.id?.toString() || '';
+      let safeName = activeUser?.username || activeUser?.first_name || 'tester';
 
       const { data, error } = await supabase.rpc('register_player', {
         p_telegram_id: safeId,
@@ -79,7 +81,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           }
         }
 
-        const dailyRes = await supabase.rpc('claim_daily_reward', { p_player_id: safeId });
+        const dailyRes = await supabase.rpc('claim_daily_reward', { p_player_id: activeUser.id.toString() });
         if (dailyRes.data && dailyRes.data.success) {
            setDailyRewardData({
              reward: dailyRes.data.reward,
@@ -130,8 +132,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     console.log(`Syncing ${tapsToSync} taps to database...`);
     
     // Make sure we have a user
-    let currentUserId = user?.id?.toString() || localStorage.getItem('earnegg_device_id') || '123456789';
-    let currentUsername = user?.username || user?.first_name || 'tester';
+    if (!user) return;
+    let currentUserId = user.id.toString();
+    let currentUsername = user.username || user.first_name || 'User';
 
     const { data, error } = await supabase.rpc('sync_taps', { 
       p_telegram_id: currentUserId,
