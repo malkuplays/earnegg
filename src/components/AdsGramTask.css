@@ -1,0 +1,72 @@
+.adsgram-task-wrapper {
+    width: 100%;
+    transition: opacity 0.3s ease;
+}
+
+.adsgram-task-wrapper.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+adsgram-task {
+    display: block;
+    --adsgram-task-background: transparent;
+    --adsgram-task-border-radius: 0;
+    --adsgram-task-color: #ffffff;
+    --adsgram-task-padding: 0;
+}
+
+.task-reward-slot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.task-btn {
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+}
+
+.go-btn {
+    background: linear-gradient(135deg, #f0c929 0%, #e67e22 100%);
+    color: #1a1a1a;
+    box-shadow: 0 4px 15px rgba(240, 201, 41, 0.3);
+}
+
+.claim-btn {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.task-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.task-btn:active {
+    transform: translateY(0);
+}
+
+.task-done-status {
+    color: #2ecc71;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}

@@ -8,6 +8,7 @@ import { supabase } from '../lib/supabase';
 import { useApp } from '../context/AppContext';
 import { showAd } from '../lib/adsgram';
 import { hapticFeedback } from '../lib/telegram';
+import AdsGramTask from '../components/AdsGramTask';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -123,25 +124,31 @@ export default function Tasks() {
             variants={itemVariants}
             className="task-card glass-panel ad-task"
           >
-            <div className="task-icon-wrapper">
-              <Play className="text-accent" size={24} fill="currentColor" />
-            </div>
-            <div className="task-info">
-              <h3 className="h3">Sponsored Video</h3>
-              <div className="task-reward">
-                <span className="coin-mini">💰</span>
-                <span className="reward-amount">+{taskAmount.toLocaleString()}</span>
-              </div>
-            </div>
-            <div className="task-action">
-              <button 
-                className="go-btn" 
-                onClick={onWatchTaskAd}
-                disabled={adLoading}
-              >
-                {adLoading ? '...' : <ChevronRight size={20} />}
-              </button>
-            </div>
+            {taskBlockId.startsWith('task-') ? (
+              <AdsGramTask blockId={taskBlockId} />
+            ) : (
+              <>
+                <div className="task-icon-wrapper">
+                  <Play className="text-accent" size={24} fill="currentColor" />
+                </div>
+                <div className="task-info">
+                  <h3 className="h3">Sponsored Video</h3>
+                  <div className="task-reward">
+                    <span className="coin-mini">💰</span>
+                    <span className="reward-amount">+{taskAmount.toLocaleString()}</span>
+                  </div>
+                </div>
+                <div className="task-action">
+                  <button 
+                    className="go-btn" 
+                    onClick={onWatchTaskAd}
+                    disabled={adLoading}
+                  >
+                    {adLoading ? '...' : <ChevronRight size={20} />}
+                  </button>
+                </div>
+              </>
+            )}
           </motion.div>
         )}
 

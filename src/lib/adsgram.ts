@@ -1,21 +1,4 @@
-export interface ShowPromiseResult {
-    done: boolean;
-    description: string;
-    state: 'load' | 'render' | 'playing' | 'destroy';
-    error: boolean;
-}
-
-export interface AdController {
-    show: () => Promise<ShowPromiseResult>;
-}
-
-declare global {
-    interface Window {
-        Adsgram?: {
-            init: (params: { blockId: string }) => AdController;
-        };
-    }
-}
+import type { AdController, ShowPromiseResult } from '../types/adsgram';
 
 export type AdType = 'rewarded' | 'interstitial';
 
@@ -26,8 +9,8 @@ export async function showAd(blockId: string, type: AdType = 'rewarded'): Promis
     }
 
     try {
-        const controller = window.Adsgram.init({ blockId });
-        const result = await controller.show();
+        const controller: AdController = (window as any).Adsgram.init({ blockId });
+        const result: ShowPromiseResult = await controller.show();
         
         if (type === 'rewarded') {
             // Rewarded must be completed
