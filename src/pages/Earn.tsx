@@ -15,7 +15,11 @@ interface ClickParticle {
 }
 
 export default function Earn() {
-  const { balance, energy, maxEnergy, handleTap, multitapLevel, adsBlockId, interstitialBlockId, handleAdReward } = useApp();
+  const { 
+    balance, energy, maxEnergy, handleTap, multitapLevel, 
+    adsBlockId, interstitialBlockId, handleAdReward,
+    rewardAmount, interstitialAmount
+  } = useApp();
   const [particles, setParticles] = useState<ClickParticle[]>([]);
   const [adLoading, setAdLoading] = useState(false);
   const [encouragement, setEncouragement] = useState<string>("Keep tapping!");
@@ -79,10 +83,10 @@ export default function Earn() {
     try {
       const success = await showAd(adsBlockId, 'rewarded');
       if (success) {
-        const rewarded = await handleAdReward(1000);
+        const rewarded = await handleAdReward(rewardAmount);
         if (rewarded) {
           hapticFeedback('success');
-          setEncouragement("Awesome! +1,000 coins earned! 💰");
+          setEncouragement(`Awesome! +${rewardAmount.toLocaleString()} coins earned! 💰`);
         }
       }
     } catch (e) {
@@ -99,10 +103,10 @@ export default function Earn() {
     try {
       const success = await showAd(interstitialBlockId, 'interstitial');
       if (success) {
-        const rewarded = await handleAdReward(500);
+        const rewarded = await handleAdReward(interstitialAmount);
         if (rewarded) {
           hapticFeedback('success');
-          setEncouragement("Quick bonus! +500 coins! ⚡");
+          setEncouragement(`Quick bonus! +${interstitialAmount.toLocaleString()} coins! ⚡`);
         }
       }
     } catch (e) {
@@ -195,7 +199,7 @@ export default function Earn() {
             disabled={adLoading}
           >
             <Play size={18} fill="currentColor" />
-            <span>{adLoading ? '...' : 'Watch (+1,000)'}</span>
+            <span>{adLoading ? '...' : `Watch (+${rewardAmount.toLocaleString()})`}</span>
           </button>
         )}
         {interstitialBlockId && (
@@ -205,7 +209,7 @@ export default function Earn() {
             disabled={adLoading}
           >
             <Zap size={18} fill="currentColor" />
-            <span>{adLoading ? '...' : 'Quick (+500)'}</span>
+            <span>{adLoading ? '...' : `Quick (+${interstitialAmount.toLocaleString()})`}</span>
           </button>
         )}
       </div>

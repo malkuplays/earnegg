@@ -23,7 +23,7 @@ const itemVariants: Variants = {
 };
 
 export default function Tasks() {
-  const { user, taskBlockId, handleAdReward } = useApp();
+  const { user, taskBlockId, handleAdReward, taskAmount } = useApp();
   const [tasks, setTasks] = useState<any[]>([]);
   const [loadingTask, setLoadingTask] = useState<number | null>(null);
   const [adLoading, setAdLoading] = useState(false);
@@ -93,7 +93,7 @@ export default function Tasks() {
       // or specific showAd calls. If it's the "Task" format, usually it's a specific blockId.
       const success = await showAd(taskBlockId, 'rewarded');
       if (success) {
-        const rewarded = await handleAdReward(2500);
+        const rewarded = await handleAdReward(taskAmount);
         if (rewarded) {
           hapticFeedback('success');
         }
@@ -130,7 +130,7 @@ export default function Tasks() {
               <h3 className="h3">Sponsored Video</h3>
               <div className="task-reward">
                 <span className="coin-mini">💰</span>
-                <span className="reward-amount">+2,500</span>
+                <span className="reward-amount">+{taskAmount.toLocaleString()}</span>
               </div>
             </div>
             <div className="task-action">

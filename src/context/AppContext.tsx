@@ -24,6 +24,9 @@ interface AppContextType {
   adsBlockId: string | null;
   interstitialBlockId: string | null;
   taskBlockId: string | null;
+  rewardAmount: number;
+  interstitialAmount: number;
+  taskAmount: number;
   handleAdReward: (amount?: number) => Promise<boolean>;
 }
 
@@ -43,6 +46,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [adsBlockId, setAdsBlockId] = useState<string | null>(null);
   const [interstitialBlockId, setInterstitialBlockId] = useState<string | null>(null);
   const [taskBlockId, setTaskBlockId] = useState<string | null>(null);
+  const [rewardAmount, setRewardAmount] = useState<number>(1000);
+  const [interstitialAmount, setInterstitialAmount] = useState<number>(500);
+  const [taskAmount, setTaskAmount] = useState<number>(2500);
 
   const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
@@ -102,19 +108,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
         setEnergy(1000);
       }
     };
-    // Fetch multiple ad configurations from Supabase
-    const fetchConfig = async () => {
-      const { data } = await supabase.from('config').select('key, value');
-      if (data) {
-        const rewardId = data.find(c => c.key === 'adsgram_block_id')?.value;
-        const interId = data.find(c => c.key === 'adsgram_interstitial_id')?.value;
-        const taskId = data.find(c => c.key === 'adsgram_task_id')?.value;
-        
-        if (rewardId) setAdsBlockId(rewardId);
-        if (interId) setInterstitialBlockId(interId);
-        if (taskId) setTaskBlockId(taskId);
-      }
-    };
+
+  // Fetch multiple ad configurations from Supabase
+  const fetchConfig = async () => {
+    const { data } = await supabase.from('config').select('key, value');
+    if (data) {
+      const rewardId = data.find(c => c.key === 'adsgram_block_id')?.value;
+      const interId = data.find(c => c.key === 'adsgram_interstitial_id')?.value;
+      const taskId = data.find(c => c.key === 'adsgram_task_id')?.value;
+      
+      const rAmt = data.find(c => c.key === 'adsgram_reward_amount')?.value;
+      const iAmt = data.find(c => c.key === 'adsgram_interstitial_amount')?.value;
+      const tAmt = data.find(c => c.key === 'adsgram_task_amount')?.value;
+
+      if (rewardId) setAdsBlockId(rewardId);
+      if (interId) setInterstitialBlockId(interId);
+      if (taskId) setTaskBlockId(taskId);
+
+      if (rAmt) setRewardAmount(parseInt(rAmt));
+      if (iAmt) setInterstitialAmount(parseInt(iAmt));
+      if (tAmt) setTaskAmount(parseInt(tAmt));
+    }
+  };
 
     fetchUser();
     fetchConfig();
@@ -229,6 +244,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       adsBlockId,
       interstitialBlockId,
       taskBlockId,
+      rewardAmount,
+      interstitialAmount,
+      taskAmount,
       handleAdReward
     }}>
       {children}
