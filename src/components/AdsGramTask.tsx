@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "../context/AppContext";
+import { ChevronRight, Play } from 'lucide-react';
 import './AdsGramTask.css';
 
 interface AdsGramTaskProps {
@@ -50,11 +51,11 @@ export default function AdsGramTask({ blockId, debug = false, rewardText, classN
                 </div>
                 
                 <div slot="button" className="task-btn go-btn">
-                    Go
+                    <ChevronRight size={20} />
                 </div>
                 
                 <div slot="claim" className="task-btn claim-btn">
-                    Claim
+                    <Play size={20} fill="currentColor" />
                 </div>
                 
                 <div slot="done" className="task-done-status">
