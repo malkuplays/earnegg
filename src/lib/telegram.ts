@@ -26,11 +26,15 @@ export const getTelegramStartParam = () => {
   }
 };
 
-export const hapticFeedback = (style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft' = 'light') => {
+export const hapticFeedback = (type: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft' | 'success' | 'warning' | 'error' = 'light') => {
   try {
     const app = getNativeWebApp();
-    if (app?.HapticFeedback) {
-      app.HapticFeedback.impactOccurred(style);
+    if (!app?.HapticFeedback) return;
+
+    if (['success', 'warning', 'error'].includes(type)) {
+      app.HapticFeedback.notificationOccurred(type as 'success' | 'warning' | 'error');
+    } else {
+      app.HapticFeedback.impactOccurred(type as 'light' | 'medium' | 'heavy' | 'rigid' | 'soft');
     }
   } catch (err) {
     // Ignored

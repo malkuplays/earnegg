@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
 import { supabase } from '../lib/supabase';
+import { showRewardedAd } from '../lib/adsgram';
+import { Play } from 'lucide-react';
 import FloatingAssets from '../components/FloatingAssets';
 import './Earn.css';
 
@@ -13,8 +15,9 @@ interface ClickParticle {
 }
 
 export default function Earn() {
-  const { balance, energy, maxEnergy, handleTap, multitapLevel } = useApp();
+  const { balance, energy, maxEnergy, handleTap, multitapLevel, adsBlockId, handleAdReward } = useApp();
   const [particles, setParticles] = useState<ClickParticle[]>([]);
+  const [adLoading, setAdLoading] = useState(false);
   const [encouragement, setEncouragement] = useState<string>("Keep tapping!");
   const [normalEncouragements, setNormalEncouragements] = useState<string[]>(["Keep tapping!"]);
   const [lowEnergyAlerts, setLowEnergyAlerts] = useState<string[]>(["Energy running low!"]);
@@ -68,6 +71,26 @@ export default function Earn() {
       setParticles(prev => prev.filter(p => p.id !== newParticleId));
     }, 1000);
   }, [energy, handleTap]);
+
+  const onWatchAd = async () => {
+    if (!adsBlockId) return;
+    
+    setAdLoading(true);
+    try {
+      const success = await showRewardedAd(adsBlockId);
+      if (success) {
+        const rewarded = await handleAdReward();
+        if (rewarded) {
+          hapticFeedback('success');
+          setEncouragement("Awesome! +1,000 coins earned! 💰");
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      hapticFeedback('error');
+    }
+    setAdLoading(false);
+  };
 
   return (
     <div className="page-container earn-page animate-fade-in">
@@ -142,6 +165,20 @@ export default function Earn() {
           <div className="energy-bar-fill" style={{ width: `${(energy / maxEnergy) * 100}%` }}></div>
         </div>
       </div>
+
+      {/* Watch Ad Bonus Button */}
+      {adsBlockId && (
+        <div className="ad-bonus-container">
+          <button 
+            className={`ad-bonus-btn interactive-btn ${adLoading ? 'loading' : ''}`}
+            onClick={onWatchAd}
+            disabled={adLoading}
+          >
+            <Play size={18} fill="currentColor" />
+            <span>{adLoading ? 'Loading Ad...' : 'Watch Ad (+1,000 💰)'}</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -21,6 +21,8 @@ interface AppContextType {
   handleTap: () => void;
   user: any | null;
   refreshStats: () => Promise<void>;
+  adsBlockId: string | null;
+  handleAdReward: () => Promise<boolean>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -36,6 +38,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [hasTapBot, setHasTapBot] = useState(false);
   const [loginStreak, setLoginStreak] = useState(0);
   const [dailyRewardData, setDailyRewardData] = useState<DailyRewardData | null>(null);
+  const [adsBlockId, setAdsBlockId] = useState<string | null>(null);
 
   const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
@@ -95,7 +98,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
         setEnergy(1000);
       }
     };
+    // Fetch ad configuration from Supabase
+    const fetchConfig = async () => {
+      const { data } = await supabase.from('config').select('value').eq('key', 'adsgram_block_id').single();
+      if (data) setAdsBlockId(data.value);
+    };
+
     fetchUser();
+    fetchConfig();
   }, []);
 
   // Energy regeneration interval
@@ -175,6 +185,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
     }
   }, [energy, syncWithDatabase]);
 
+  const handleAdReward = async () => {
+    if (!user?.id) return false;
+    const { data, error } = await supabase.rpc('reward_ad_watch', { p_telegram_id: user.id.toString() });
+    if (data?.success && !error) {
+       setBalance(Number(data.new_balance));
+       return true;
+    }
+    return false;
+  };
+
   return (
     <AppContext.Provider value={{ 
       balance, 
@@ -189,7 +209,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       setDailyRewardData,
       handleTap, 
       user,
-      refreshStats
+      refreshStats,
+      adsBlockId,
+      handleAdReward
     }}>
       {children}
     </AppContext.Provider>
