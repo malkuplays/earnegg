@@ -57,7 +57,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       const referrerId = startParam.startsWith('ref_') ? startParam.replace('ref_', '') : '';
       
       let safeId = activeUser?.id?.toString() || '';
-      let safeName = activeUser?.username || activeUser?.first_name || 'tester';
+      let safeName = activeUser?.username || activeUser?.first_name || 'Player';
 
       const { data, error } = await supabase.rpc('register_player', {
         p_telegram_id: safeId,
