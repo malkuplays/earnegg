@@ -35,6 +35,34 @@
   background: rgba(26, 29, 39, 0.4);
 }
 
+/* Sponsored Ad Task */
+.task-card.ad-task {
+  border: 1.5px dashed var(--accent-primary-dim);
+  background: linear-gradient(135deg, rgba(240, 201, 41, 0.08) 0%, transparent 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.task-card.ad-task::before {
+  content: "SPONSORED";
+  position: absolute;
+  top: 6px;
+  right: -20px;
+  background: var(--accent-primary);
+  color: #0d0f14;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 2px 25px;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+.task-card.ad-task .task-icon-wrapper {
+  background: rgba(240, 201, 41, 0.15);
+  box-shadow: 0 0 15px rgba(240, 201, 41, 0.1);
+}
+
 .text-success { color: var(--success); }
 .text-accent { color: var(--accent-primary); }
 

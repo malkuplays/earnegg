@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
 import { supabase } from '../lib/supabase';
-import { showRewardedAd } from '../lib/adsgram';
-import { Play } from 'lucide-react';
+import { showAd } from '../lib/adsgram';
+import { Play, Zap } from 'lucide-react';
 import FloatingAssets from '../components/FloatingAssets';
 import './Earn.css';
 
@@ -15,7 +15,7 @@ interface ClickParticle {
 }
 
 export default function Earn() {
-  const { balance, energy, maxEnergy, handleTap, multitapLevel, adsBlockId, handleAdReward } = useApp();
+  const { balance, energy, maxEnergy, handleTap, multitapLevel, adsBlockId, interstitialBlockId, handleAdReward } = useApp();
   const [particles, setParticles] = useState<ClickParticle[]>([]);
   const [adLoading, setAdLoading] = useState(false);
   const [encouragement, setEncouragement] = useState<string>("Keep tapping!");
@@ -77,12 +77,32 @@ export default function Earn() {
     
     setAdLoading(true);
     try {
-      const success = await showRewardedAd(adsBlockId);
+      const success = await showAd(adsBlockId, 'rewarded');
       if (success) {
-        const rewarded = await handleAdReward();
+        const rewarded = await handleAdReward(1000);
         if (rewarded) {
           hapticFeedback('success');
           setEncouragement("Awesome! +1,000 coins earned! 💰");
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      hapticFeedback('error');
+    }
+    setAdLoading(false);
+  };
+
+  const onWatchInterstitial = async () => {
+    if (!interstitialBlockId) return;
+    
+    setAdLoading(true);
+    try {
+      const success = await showAd(interstitialBlockId, 'interstitial');
+      if (success) {
+        const rewarded = await handleAdReward(500);
+        if (rewarded) {
+          hapticFeedback('success');
+          setEncouragement("Quick bonus! +500 coins! ⚡");
         }
       }
     } catch (e) {
@@ -166,19 +186,29 @@ export default function Earn() {
         </div>
       </div>
 
-      {/* Watch Ad Bonus Button */}
-      {adsBlockId && (
-        <div className="ad-bonus-container">
+      {/* Ad Buttons Grid */}
+      <div className="ad-buttons-container">
+        {adsBlockId && (
           <button 
-            className={`ad-bonus-btn interactive-btn ${adLoading ? 'loading' : ''}`}
+            className={`ad-bonus-btn reward interactive-btn ${adLoading ? 'loading' : ''}`}
             onClick={onWatchAd}
             disabled={adLoading}
           >
             <Play size={18} fill="currentColor" />
-            <span>{adLoading ? 'Loading Ad...' : 'Watch Ad (+1,000 💰)'}</span>
+            <span>{adLoading ? '...' : 'Watch (+1,000)'}</span>
           </button>
-        </div>
-      )}
+        )}
+        {interstitialBlockId && (
+          <button 
+            className={`ad-bonus-btn inter interactive-btn ${adLoading ? 'loading' : ''}`}
+            onClick={onWatchInterstitial}
+            disabled={adLoading}
+          >
+            <Zap size={18} fill="currentColor" />
+            <span>{adLoading ? '...' : 'Quick (+500)'}</span>
+          </button>
+        )}
+      </div>
     </div>
   );
 }

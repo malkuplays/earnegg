@@ -17,20 +17,30 @@ declare global {
     }
 }
 
-export async function showRewardedAd(blockId: string): Promise<boolean> {
-    if (!window.Adsgram) {
+export type AdType = 'rewarded' | 'interstitial';
+
+export async function showAd(blockId: string, type: AdType = 'rewarded'): Promise<boolean> {
+    if (!window || !window.Adsgram) {
         console.error('AdsGram SDK not loaded');
         return false;
     }
 
     try {
-        const AdController = window.Adsgram.init({ blockId });
-        const result = await AdController.show();
+        const controller = window.Adsgram.init({ blockId });
+        const result = await controller.show();
         
-        // done is true if user watch ad till the end, error is false
-        return result.done && !result.error;
+        if (type === 'rewarded') {
+            // Rewarded must be completed
+            return result.done && !result.error;
+        } else {
+            // Interstitial can be skipped but should not have error
+            return !result.error;
+        }
     } catch (error: any) {
         console.error('AdsGram Error:', error);
         return false;
     }
 }
+
+// Keeping the old one for compatibility while I migate
+export const showRewardedAd = (blockId: string) => showAd(blockId, 'rewarded');

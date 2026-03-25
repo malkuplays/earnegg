@@ -22,7 +22,9 @@ interface AppContextType {
   user: any | null;
   refreshStats: () => Promise<void>;
   adsBlockId: string | null;
-  handleAdReward: () => Promise<boolean>;
+  interstitialBlockId: string | null;
+  taskBlockId: string | null;
+  handleAdReward: (amount?: number) => Promise<boolean>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -39,6 +41,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [loginStreak, setLoginStreak] = useState(0);
   const [dailyRewardData, setDailyRewardData] = useState<DailyRewardData | null>(null);
   const [adsBlockId, setAdsBlockId] = useState<string | null>(null);
+  const [interstitialBlockId, setInterstitialBlockId] = useState<string | null>(null);
+  const [taskBlockId, setTaskBlockId] = useState<string | null>(null);
 
   const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
@@ -98,10 +102,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
         setEnergy(1000);
       }
     };
-    // Fetch ad configuration from Supabase
+    // Fetch multiple ad configurations from Supabase
     const fetchConfig = async () => {
-      const { data } = await supabase.from('config').select('value').eq('key', 'adsgram_block_id').single();
-      if (data) setAdsBlockId(data.value);
+      const { data } = await supabase.from('config').select('key, value');
+      if (data) {
+        const rewardId = data.find(c => c.key === 'adsgram_block_id')?.value;
+        const interId = data.find(c => c.key === 'adsgram_interstitial_id')?.value;
+        const taskId = data.find(c => c.key === 'adsgram_task_id')?.value;
+        
+        if (rewardId) setAdsBlockId(rewardId);
+        if (interId) setInterstitialBlockId(interId);
+        if (taskId) setTaskBlockId(taskId);
+      }
     };
 
     fetchUser();
@@ -185,11 +197,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
     }
   }, [energy, syncWithDatabase]);
 
-  const handleAdReward = async () => {
+  const handleAdReward = async (amount: number = 1000) => {
     if (!user?.id) return false;
-    const { data, error } = await supabase.rpc('reward_ad_watch', { p_telegram_id: user.id.toString() });
-    if (data?.success && !error) {
-       setBalance(Number(data.new_balance));
+    const { error } = await supabase.rpc('reward_ad_watch', { 
+      p_telegram_id: user.id.toString(),
+      p_reward_amount: amount
+    });
+    if (!error) {
+       // Since the RPC doesn't return the new balance in the same way now, we refresh or assume success
+       setBalance(prev => prev + amount);
        return true;
     }
     return false;
@@ -211,6 +227,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       user,
       refreshStats,
       adsBlockId,
+      interstitialBlockId,
+      taskBlockId,
       handleAdReward
     }}>
       {children}

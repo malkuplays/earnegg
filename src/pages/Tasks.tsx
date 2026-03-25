@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { useApp } from '../context/AppContext';
+import { showAd } from '../lib/adsgram';
+import { hapticFeedback } from '../lib/telegram';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -21,9 +23,10 @@ const itemVariants: Variants = {
 };
 
 export default function Tasks() {
-  const { user } = useApp();
+  const { user, taskBlockId, handleAdReward } = useApp();
   const [tasks, setTasks] = useState<any[]>([]);
   const [loadingTask, setLoadingTask] = useState<number | null>(null);
+  const [adLoading, setAdLoading] = useState(false);
 
   useEffect(() => {
     if (user?.id) fetchTasks();
@@ -77,10 +80,29 @@ export default function Tasks() {
     if (data && !error) {
       // Refresh local tasks visually
       setTasks(prev => prev.map(t => t.id === taskId ? { ...t, completed: true } : t));
-      // Re-fetch balance by just refreshing the window or handling local state up
-      // In a real app we would use Context carefully, but page reload is fine for MVP
+      hapticFeedback('success');
     }
     setLoadingTask(null);
+  };
+
+  const onWatchTaskAd = async () => {
+    if (!taskBlockId) return;
+    setAdLoading(true);
+    try {
+      // For Task format ads, AdsGram documentation implies they are often standard links 
+      // or specific showAd calls. If it's the "Task" format, usually it's a specific blockId.
+      const success = await showAd(taskBlockId, 'rewarded');
+      if (success) {
+        const rewarded = await handleAdReward(2500);
+        if (rewarded) {
+          hapticFeedback('success');
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      hapticFeedback('error');
+    }
+    setAdLoading(false);
   };
   return (
     <div className="page-container tasks-page animate-fade-in">
@@ -95,6 +117,34 @@ export default function Tasks() {
         initial="hidden"
         animate="show"
       >
+        {/* AdsGram Task Ad */}
+        {taskBlockId && (
+          <motion.div 
+            variants={itemVariants}
+            className="task-card glass-panel ad-task"
+          >
+            <div className="task-icon-wrapper">
+              <Play className="text-accent" size={24} fill="currentColor" />
+            </div>
+            <div className="task-info">
+              <h3 className="h3">Sponsored Video</h3>
+              <div className="task-reward">
+                <span className="coin-mini">💰</span>
+                <span className="reward-amount">+2,500</span>
+              </div>
+            </div>
+            <div className="task-action">
+              <button 
+                className="go-btn" 
+                onClick={onWatchTaskAd}
+                disabled={adLoading}
+              >
+                {adLoading ? '...' : <ChevronRight size={20} />}
+              </button>
+            </div>
+          </motion.div>
+        )}
+
         {tasks.map(task => (
           <motion.div 
             variants={itemVariants}
