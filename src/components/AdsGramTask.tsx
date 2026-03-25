@@ -6,9 +6,10 @@ interface AdsGramTaskProps {
     blockId: string;
     debug?: boolean;
     rewardText?: string;
+    className?: string;
 }
 
-export default function AdsGramTask({ blockId, debug = false, rewardText }: AdsGramTaskProps) {
+export default function AdsGramTask({ blockId, debug = false, rewardText, className = "" }: AdsGramTaskProps) {
     const taskRef = useRef<any>(null);
     const { handleAdReward, taskAmount } = useApp();
     const [isLoaded, setIsLoaded] = useState(false);
@@ -35,11 +36,12 @@ export default function AdsGramTask({ blockId, debug = false, rewardText }: AdsG
     }, [handleAdReward, taskAmount]);
 
     return (
-        <div className={`adsgram-task-wrapper ${isLoaded ? 'loaded' : 'loading'}`}>
+        <div className={`adsgram-task-wrapper ${isLoaded ? 'loaded' : 'loading'} ${className}`}>
             <adsgram-task
                 data-block-id={blockId}
                 data-debug={debug ? "true" : "false"}
                 ref={taskRef}
+                className="adsgram-task-element"
             >
                 {/* Custom slots to match Earnegg design */}
                 <div slot="reward" className="task-reward-slot">

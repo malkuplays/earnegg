@@ -120,36 +120,37 @@ export default function Tasks() {
       >
         {/* AdsGram Task Ad */}
         {taskBlockId && (
-          <motion.div 
-            variants={itemVariants}
-            className="task-card glass-panel ad-task"
-          >
-            {taskBlockId.startsWith('task-') ? (
-              <AdsGramTask blockId={taskBlockId} />
-            ) : (
-              <>
-                <div className="task-icon-wrapper">
-                  <Play className="text-accent" size={24} fill="currentColor" />
+          taskBlockId.startsWith('task-') ? (
+            <AdsGramTask 
+              blockId={taskBlockId} 
+              className="task-card glass-panel ad-task" 
+            />
+          ) : (
+            <motion.div 
+              variants={itemVariants}
+              className="task-card glass-panel ad-task"
+            >
+              <div className="task-icon-wrapper">
+                <Play className="text-accent" size={24} fill="currentColor" />
+              </div>
+              <div className="task-info">
+                <h3 className="h3">Sponsored Video</h3>
+                <div className="task-reward">
+                  <span className="coin-mini">💰</span>
+                  <span className="reward-amount">+{taskAmount.toLocaleString()}</span>
                 </div>
-                <div className="task-info">
-                  <h3 className="h3">Sponsored Video</h3>
-                  <div className="task-reward">
-                    <span className="coin-mini">💰</span>
-                    <span className="reward-amount">+{taskAmount.toLocaleString()}</span>
-                  </div>
-                </div>
-                <div className="task-action">
-                  <button 
-                    className="go-btn" 
-                    onClick={onWatchTaskAd}
-                    disabled={adLoading}
-                  >
-                    {adLoading ? '...' : <ChevronRight size={20} />}
-                  </button>
-                </div>
-              </>
-            )}
-          </motion.div>
+              </div>
+              <div className="task-action">
+                <button 
+                  className="go-btn" 
+                  onClick={onWatchTaskAd}
+                  disabled={adLoading}
+                >
+                  {adLoading ? '...' : <ChevronRight size={20} />}
+                </button>
+              </div>
+            </motion.div>
+          )
         )}
 
         {tasks.map(task => (

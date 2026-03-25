@@ -1,15 +1,21 @@
 .adsgram-task-wrapper {
     width: 100%;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .adsgram-task-wrapper.loading {
     opacity: 0.6;
     pointer-events: none;
+    min-height: 80px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
 }
 
-adsgram-task {
+.adsgram-task-element {
     display: block;
+    width: 100%;
     --adsgram-task-background: transparent;
     --adsgram-task-border-radius: 0;
     --adsgram-task-color: #ffffff;
