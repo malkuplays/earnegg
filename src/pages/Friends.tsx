@@ -64,6 +64,17 @@ export default function Friends() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleShare = () => {
+    const text = 'Join me on Earnegg and we both get 5,000 coins instantly!';
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`;
+    const tgApp = (window as any).Telegram?.WebApp;
+    if (tgApp?.openTelegramLink) {
+      tgApp.openTelegramLink(shareUrl);
+    } else {
+      window.open(shareUrl, '_blank');
+    }
+  };
+
   return (
     <div className="page-container friends-page animate-fade-in">
       <div className="invite-hero glass-panel">
@@ -80,7 +91,7 @@ export default function Friends() {
           </button>
         </div>
         
-        <button className="share-btn interactive-btn">Share Invite Link</button>
+        <button className="share-btn interactive-btn" onClick={handleShare}>Share Invite Link</button>
       </div>
 
       <div className="friends-list-container">

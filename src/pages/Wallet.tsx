@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRightLeft, CreditCard, Landmark, Clock, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { supabase } from '../lib/supabase';
@@ -6,6 +7,7 @@ import './Wallet.css';
 
 export default function Wallet() {
   const { balance, user } = useApp();
+  const navigate = useNavigate();
   // 1000 coins = 10 Rupees -> 1 coin = 0.01 Rupees -> balance / 100
   const MONEY_CONVERSION = balance / 100;
 
@@ -203,14 +205,15 @@ export default function Wallet() {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                   <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>- {item.amount_coins} coins</span>
                   <span style={{ 
-                    color: item.status === 'pending' ? '#fbbf24' : item.status === 'completed' ? '#4ade80' : '#ff4d4d', 
+                    color: item.status === 'pending' ? '#fbbf24' : (item.status === 'completed' || item.status === 'approved') ? '#4ade80' : '#ff4d4d', 
                     fontSize: '12px', 
                     marginTop: '4px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '4px'
+                    gap: '4px',
+                    textTransform: 'capitalize'
                   }}>
-                    {item.status === 'pending' ? <Clock size={12} /> : item.status === 'completed' ? <CheckCircle2 size={12} /> : null}
+                    {item.status === 'pending' ? <Clock size={12} /> : (item.status === 'completed' || item.status === 'approved') ? <CheckCircle2 size={12} /> : null}
                     {item.status}
                   </span>
                 </div>
@@ -223,6 +226,24 @@ export default function Wallet() {
           )}
         </div>
       </div>
+
+      <div className="legal-section" style={{ marginTop: '32px', textAlign: 'center' }}>
+        <button 
+          className="interactive-btn" 
+          onClick={() => navigate('/legal')}
+          style={{ 
+            background: 'transparent', 
+            border: 'none', 
+            color: 'var(--text-secondary)', 
+            textDecoration: 'underline',
+            fontSize: '14px',
+            cursor: 'pointer'
+          }}
+        >
+          View Privacy Policy & Terms
+        </button>
+      </div>
+
     </div>
   );
 }

@@ -49,7 +49,17 @@ export default function Tasks() {
     }
   };
 
-  const completeTask = async (taskId: number) => {
+  const completeTask = async (taskId: number, url?: string) => {
+    if (url) {
+      // Use Telegram's native method to open links externally or in-app browser
+      const tgApp = (window as any).Telegram?.WebApp;
+      if (tgApp?.openLink) {
+        tgApp.openLink(url);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+    
     if (!user?.id) return;
     setLoadingTask(taskId);
     
@@ -108,7 +118,7 @@ export default function Tasks() {
               ) : (
                 <button 
                   className="go-btn" 
-                  onClick={() => completeTask(task.id)}
+                  onClick={() => completeTask(task.id, task.url)}
                   disabled={loadingTask === task.id}
                 >
                   <ChevronRight size={20} />

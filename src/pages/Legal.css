@@ -1,0 +1,33 @@
+.legal-page {
+  gap: 24px;
+}
+
+.legal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.legal-card {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.legal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.legal-content {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legal-text {
+  color: var(--text-primary);
+  line-height: 1.6;
+}

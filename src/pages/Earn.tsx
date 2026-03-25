@@ -16,19 +16,33 @@ export default function Earn() {
   const { balance, energy, maxEnergy, handleTap } = useApp();
   const [particles, setParticles] = useState<ClickParticle[]>([]);
   const [encouragement, setEncouragement] = useState<string>("Keep tapping!");
+  const [normalEncouragements, setNormalEncouragements] = useState<string[]>(["Keep tapping!"]);
+  const [lowEnergyAlerts, setLowEnergyAlerts] = useState<string[]>(["Energy running low!"]);
   const eggRef = useRef<HTMLDivElement>(null);
   const particleIdCounter = useRef(0);
 
   useEffect(() => {
-    const fetchEncouragement = async () => {
-      const { data } = await supabase.from('encouragements').select('message');
+    const fetchEncouragements = async () => {
+      const { data } = await supabase.from('encouragements').select('message, type');
       if (data && data.length > 0) {
-        const randomMsg = data[Math.floor(Math.random() * data.length)].message;
-        setEncouragement(randomMsg);
+        const normals = data.filter(d => d.type === 'normal').map(d => d.message);
+        const lows = data.filter(d => d.type === 'low_energy').map(d => d.message);
+        if (normals.length) setNormalEncouragements(normals);
+        if (lows.length) setLowEnergyAlerts(lows);
       }
     };
-    fetchEncouragement();
+    fetchEncouragements();
   }, []);
+
+  const isLowEnergy = energy < maxEnergy * 0.15; // 15% threshold
+  
+  useEffect(() => {
+    if (isLowEnergy) {
+       setEncouragement(lowEnergyAlerts[Math.floor(Math.random() * lowEnergyAlerts.length)] || "Energy low!");
+    } else {
+       setEncouragement(normalEncouragements[Math.floor(Math.random() * normalEncouragements.length)] || "Keep tapping!");
+    }
+  }, [isLowEnergy, normalEncouragements, lowEnergyAlerts]);
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -65,7 +79,9 @@ export default function Earn() {
           <span className="coin-icon">💰</span>
           <span className="balance-number">{balance.toLocaleString()}</span>
         </div>
-        <p className="encouragement-text">{encouragement}</p>
+        <p className={`encouragement-text ${isLowEnergy ? 'low-energy-alert' : ''}`}>
+          {encouragement}
+        </p>
       </div>
 
       <div className="egg-container">

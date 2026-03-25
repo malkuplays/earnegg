@@ -75,9 +75,9 @@
 .go-btn {
   background: var(--bg-tertiary);
   color: var(--text-primary);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  /* User requested padding of 20px */
+  padding: 20px;
+  border-radius: 50%; /* It will become larger but still circular or pill depending on content */
   display: flex;
   align-items: center;
   justify-content: center;
