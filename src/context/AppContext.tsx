@@ -2,12 +2,25 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { getTelegramUser, getTelegramStartParam } from '../lib/telegram';
 import { supabase } from '../lib/supabase';
 
+interface DailyRewardData {
+  reward: number;
+  streak: number;
+}
+
 interface AppContextType {
   balance: number;
   energy: number;
   maxEnergy: number;
+  multitapLevel: number;
+  energyLimitLevel: number;
+  rechargeSpeedLevel: number;
+  hasTapBot: boolean;
+  loginStreak: number;
+  dailyRewardData: DailyRewardData | null;
+  setDailyRewardData: (data: DailyRewardData | null) => void;
   handleTap: () => void;
   user: any | null;
+  refreshStats: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -15,8 +28,16 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [balance, setBalance] = useState(0);
   const [energy, setEnergy] = useState(1000);
-  const maxEnergy = 1000;
   const [user, setUser] = useState<any | null>(null);
+
+  const [multitapLevel, setMultitapLevel] = useState(1);
+  const [energyLimitLevel, setEnergyLimitLevel] = useState(1);
+  const [rechargeSpeedLevel, setRechargeSpeedLevel] = useState(1);
+  const [hasTapBot, setHasTapBot] = useState(false);
+  const [loginStreak, setLoginStreak] = useState(0);
+  const [dailyRewardData, setDailyRewardData] = useState<DailyRewardData | null>(null);
+
+  const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
   // Ref for debouncing Supabase updates
   const pendingTaps = useRef(0);
@@ -45,21 +66,58 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (data && !error) {
         setBalance(Number(data.balance));
         setEnergy(data.energy);
+        setMultitapLevel(data.multitap_level || 1);
+        setEnergyLimitLevel(data.energy_limit_level || 1);
+        setRechargeSpeedLevel(data.recharge_speed_level || 1);
+        setHasTapBot(data.has_tap_bot || false);
+        setLoginStreak(data.login_streak || 0);
+
+        if (data.has_tap_bot) {
+          const botRes = await supabase.rpc('sync_bot_earnings', { p_player_id: safeId });
+          if (botRes.data && botRes.data > 0) {
+            setBalance(prev => prev + botRes.data);
+          }
+        }
+
+        const dailyRes = await supabase.rpc('claim_daily_reward', { p_player_id: safeId });
+        if (dailyRes.data && dailyRes.data.success) {
+           setDailyRewardData({
+             reward: dailyRes.data.reward,
+             streak: dailyRes.data.streak
+           });
+           setBalance(prev => prev + dailyRes.data.reward);
+        }
       } else {
         // Fallback
         setBalance(0);
-        setEnergy(maxEnergy);
+        setEnergy(1000);
       }
     };
     fetchUser();
-    
-    // Setup energy regeneration interval
+  }, []);
+
+  // Energy regeneration interval
+  useEffect(() => {
     const interval = setInterval(() => {
-      setEnergy(prev => (prev < maxEnergy ? prev + 1 : prev));
-    }, 2000); // 1 energy every 2 seconds
+      setEnergy(prev => (prev < maxEnergy ? Math.min(prev + rechargeSpeedLevel, maxEnergy) : prev));
+    }, 2000); 
     
     return () => clearInterval(interval);
-  }, []);
+  }, [maxEnergy, rechargeSpeedLevel]);
+
+  const refreshStats = async () => {
+    if (!user) return;
+    const { data } = await supabase.from('players').select('*').eq('id', user.id.toString()).single();
+    if (data) {
+      setBalance(Number(data.balance));
+      setEnergy(data.energy);
+      setMultitapLevel(data.multitap_level || 1);
+      setEnergyLimitLevel(data.energy_limit_level || 1);
+      setRechargeSpeedLevel(data.recharge_speed_level || 1);
+      setHasTapBot(data.has_tap_bot || false);
+      setLoginStreak(data.login_streak || 0);
+    }
+  };
 
   const syncWithDatabase = useCallback(async () => {
     if (pendingTaps.current === 0) return;
@@ -98,7 +156,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const handleTap = useCallback(() => {
     if (energy > 0) {
-      setBalance(prev => prev + 1);
+      setBalance(prev => prev + (1 * multitapLevel));
       setEnergy(prev => prev - 1);
       
       pendingTaps.current += 1;
@@ -115,7 +173,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [energy, syncWithDatabase]);
 
   return (
-    <AppContext.Provider value={{ balance, energy, maxEnergy, handleTap, user }}>
+    <AppContext.Provider value={{ 
+      balance, 
+      energy, 
+      maxEnergy, 
+      multitapLevel,
+      energyLimitLevel,
+      rechargeSpeedLevel,
+      hasTapBot,
+      loginStreak,
+      dailyRewardData,
+      setDailyRewardData,
+      handleTap, 
+      user,
+      refreshStats
+    }}>
       {children}
     </AppContext.Provider>
   );

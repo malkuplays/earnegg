@@ -1,0 +1,57 @@
+.leaderboard-page {
+  gap: 24px;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 24px;
+}
+
+.leaderboard-card {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+}
+
+.leaderboard-card.is-me {
+  background: rgba(240, 201, 41, 0.1);
+  border-color: rgba(240, 201, 41, 0.3);
+}
+
+.rank-wrap {
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rank-number {
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.player-info {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.player-balance {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-tertiary);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}

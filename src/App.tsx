@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { AppProvider } from './context/AppContext';
+import { AppProvider, useApp } from './context/AppContext';
 import { getTelegramUser } from './lib/telegram';
 
 // Pages
@@ -10,9 +10,12 @@ import Tasks from './pages/Tasks';
 import Friends from './pages/Friends';
 import Wallet from './pages/Wallet';
 import Legal from './pages/Legal';
+import Boosts from './pages/Boosts';
+import Leaderboard from './pages/Leaderboard';
 
 // Components
 import BottomNav from './components/BottomNav';
+import DailyRewardModal from './components/DailyRewardModal';
 import PageTransition from './components/PageTransition';
 
 import './App.css';
@@ -26,11 +29,27 @@ function AppRoutes() {
         <Route path="/" element={<Navigate to="/earn" replace />} />
         <Route path="/earn" element={<PageTransition><Earn /></PageTransition>} />
         <Route path="/tasks" element={<PageTransition><Tasks /></PageTransition>} />
+        <Route path="/boosts" element={<PageTransition><Boosts /></PageTransition>} />
+        <Route path="/leaderboard" element={<PageTransition><Leaderboard /></PageTransition>} />
         <Route path="/friends" element={<PageTransition><Friends /></PageTransition>} />
         <Route path="/wallet" element={<PageTransition><Wallet /></PageTransition>} />
         <Route path="/legal" element={<PageTransition><Legal /></PageTransition>} />
       </Routes>
     </AnimatePresence>
+  );
+}
+
+function DailyRewardTrigger() {
+  const { dailyRewardData, setDailyRewardData } = useApp();
+  
+  if (!dailyRewardData) return null;
+
+  return (
+    <DailyRewardModal 
+      reward={dailyRewardData.reward} 
+      streak={dailyRewardData.streak} 
+      onClose={() => setDailyRewardData(null)} 
+    />
   );
 }
 
@@ -92,6 +111,9 @@ function App() {
           
           {/* Persistent Bottom Nav */}
           <BottomNav />
+
+          {/* Overlays */}
+          <DailyRewardTrigger />
         </div>
       </BrowserRouter>
     </AppProvider>
