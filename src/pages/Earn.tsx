@@ -1,11 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
 import { supabase } from '../lib/supabase';
 import FloatingAssets from '../components/FloatingAssets';
-import { Trophy } from 'lucide-react';
 import './Earn.css';
 
 interface ClickParticle {
@@ -16,7 +14,6 @@ interface ClickParticle {
 
 export default function Earn() {
   const { balance, energy, maxEnergy, handleTap, multitapLevel } = useApp();
-  const navigate = useNavigate();
   const [particles, setParticles] = useState<ClickParticle[]>([]);
   const [encouragement, setEncouragement] = useState<string>("Keep tapping!");
   const [normalEncouragements, setNormalEncouragements] = useState<string[]>(["Keep tapping!"]);
@@ -76,14 +73,7 @@ export default function Earn() {
     <div className="page-container earn-page animate-fade-in">
       <FloatingAssets />
       
-      <div className="balance-container" style={{ position: 'relative' }}>
-        <button 
-          className="glass-panel hover-bright"
-          style={{ position: 'absolute', right: '16px', top: '16px', padding: '10px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)' }}
-          onClick={() => navigate('/leaderboard')}
-        >
-          <Trophy size={20} className="text-warning" />
-        </button>
+      <div className="balance-container">
         <h2 className="caption mt-2">Coin Balance</h2>
         <div className="balance-amount">
           <span className="coin-icon">💰</span>

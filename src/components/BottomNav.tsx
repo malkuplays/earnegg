@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Pickaxe, CheckSquare, Users, Wallet, Rocket } from 'lucide-react';
+import { Pickaxe, CheckSquare, Users, Wallet, Rocket, Trophy } from 'lucide-react';
 import './BottomNav.css';
 
 const navItems = [
@@ -7,6 +7,7 @@ const navItems = [
   { path: '/tasks', icon: CheckSquare, label: 'Tasks' },
   { path: '/boosts', icon: Rocket, label: 'Boosts' },
   { path: '/friends', icon: Users, label: 'Friends' },
+  { path: '/leaderboard', icon: Trophy, label: 'Rank' },
   { path: '/wallet', icon: Wallet, label: 'Wallet' },
 ];
 
