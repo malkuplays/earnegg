@@ -22,10 +22,12 @@
     --adsgram-task-border-radius: 0;
     --adsgram-task-color: #ffffff;
     --adsgram-task-padding: 0;
-    --adsgram-task-skeleton-background: transparent;
-    --adsgram-task-icon-background: transparent;
-    --adsgram-task-title-background: transparent;
+    --adsgram-task-skeleton-background: transparent !important;
+    --adsgram-task-icon-background: transparent !important;
+    --adsgram-task-title-background: transparent !important;
     --adsgram-task-icon-border-radius: 12px;
+    --adsgram-task-icon-size: 0; /* Hide default icon if slots fail */
+    --adsgram-task-title-font-size: 0; /* Hide default title if slots fail */
 }
 
 /* Align reward inside the ad content area if needed, or handle via slots */
@@ -36,7 +38,21 @@
     font-weight: 700;
     font-size: 0.9rem;
     color: var(--accent-primary);
-    margin-top: 4px;
+    margin-top: 2px;
+}
+
+.sponsored-icon {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: rgba(240, 201, 41, 0.15);
+    box-shadow: 0 0 15px rgba(240, 201, 41, 0.1);
+}
+
+.sponsored-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-primary);
 }
 
 .task-btn {
