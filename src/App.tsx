@@ -55,14 +55,14 @@ function DailyRewardTrigger() {
 }
 
 function PopupTrigger() {
-  const { popupHtml, setPopupHtml } = useApp();
+  const { popupHtml, dismissPopup } = useApp();
   
   if (!popupHtml || popupHtml.trim() === '') return null;
 
   return (
     <HtmlPopup 
       html={popupHtml} 
-      onClose={() => setPopupHtml(null)} 
+      onClose={dismissPopup} 
     />
   );
 }

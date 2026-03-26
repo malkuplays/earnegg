@@ -29,7 +29,7 @@ interface AppContextType {
   taskAmount: number;
   handleAdReward: (amount?: number) => Promise<boolean>;
   popupHtml: string | null;
-  setPopupHtml: (html: string | null) => void;
+  dismissPopup: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -133,7 +133,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       if (tAmt) setTaskAmount(parseInt(tAmt));
 
       const p_html = data.find(c => c.key === 'popup_html')?.value;
-      if (p_html) setPopupHtml(p_html);
+      if (p_html) {
+        const seenHtml = localStorage.getItem('seen_popup_html');
+        if (seenHtml !== p_html) {
+          setPopupHtml(p_html);
+        }
+      }
     }
   };
 
@@ -255,7 +260,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       taskAmount,
       handleAdReward,
       popupHtml,
-      setPopupHtml
+      dismissPopup: () => {
+        if (popupHtml) {
+          localStorage.setItem('seen_popup_html', popupHtml);
+          setPopupHtml(null);
+        }
+      }
     }}>
       {children}
     </AppContext.Provider>
