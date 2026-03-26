@@ -83,3 +83,7 @@
 .adsgram-task-wrapper.ad-task::before {
     z-index: 20;
 }
+
+.task-card.ad-task .adsgram-task-wrapper {
+    background: transparent;
+}
