@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { supabase } from '../lib/supabase';
-import { Zap, Battery, Timer, Bot, ChevronRight } from 'lucide-react';
+import { Zap, Battery, Timer, Bot, ChevronRight, UserPlus, Gift, Cpu } from 'lucide-react';
 import { motion } from 'framer-motion';
 import './Boosts.css';
 
@@ -12,6 +12,9 @@ export default function Boosts() {
     energyLimitLevel, 
     rechargeSpeedLevel, 
     hasTapBot, 
+    tapBotLevel,
+    referralBonusLevel,
+    dailyRewardLevel,
     user, 
     refreshStats 
   } = useApp();
@@ -26,7 +29,7 @@ export default function Boosts() {
       icon: <Zap size={24} className="text-accent" />,
       level: multitapLevel,
       cost: multitapLevel * 1000,
-      maxLevel: 20
+      maxLevel: 50
     },
     {
       id: 'energy_limit',
@@ -35,7 +38,7 @@ export default function Boosts() {
       icon: <Battery size={24} className="text-warning" />,
       level: energyLimitLevel,
       cost: energyLimitLevel * 2000,
-      maxLevel: 20
+      maxLevel: 50
     },
     {
       id: 'recharge_speed',
@@ -44,7 +47,7 @@ export default function Boosts() {
       icon: <Timer size={24} className="text-success" />,
       level: rechargeSpeedLevel,
       cost: rechargeSpeedLevel * 3000,
-      maxLevel: 10
+      maxLevel: 25
     },
     {
       id: 'tap_bot',
@@ -53,7 +56,34 @@ export default function Boosts() {
       icon: <Bot size={24} className="text-secondary" />,
       level: hasTapBot ? 'Active' : 0,
       cost: hasTapBot ? 0 : 20000,
-      maxLevel: 1 // Treated as boolean effectively
+      maxLevel: 1 
+    },
+    {
+      id: 'tap_bot_efficiency',
+      name: 'Bot Efficiency',
+      description: 'Mining speed & longer offline time',
+      icon: <Cpu size={24} style={{ color: '#a855f7' }} />,
+      level: tapBotLevel,
+      cost: tapBotLevel * 10000,
+      maxLevel: 20
+    },
+    {
+      id: 'referral_bonus',
+      name: 'Referral Bonus',
+      description: 'Get more coins from every invite',
+      icon: <UserPlus size={24} style={{ color: '#06b6d4' }} />,
+      level: referralBonusLevel,
+      cost: referralBonusLevel * 50000,
+      maxLevel: 10
+    },
+    {
+      id: 'daily_reward_bonus',
+      name: 'Daily Bonus',
+      description: 'Higher coins on daily login streak',
+      icon: <Gift size={24} style={{ color: '#f43f5e' }} />,
+      level: dailyRewardLevel,
+      cost: dailyRewardLevel * 25000,
+      maxLevel: 10
     }
   ];
 

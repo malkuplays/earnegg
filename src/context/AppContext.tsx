@@ -15,6 +15,9 @@ interface AppContextType {
   energyLimitLevel: number;
   rechargeSpeedLevel: number;
   hasTapBot: boolean;
+  tapBotLevel: number;
+  referralBonusLevel: number;
+  dailyRewardLevel: number;
   loginStreak: number;
   dailyRewardData: DailyRewardData | null;
   setDailyRewardData: (data: DailyRewardData | null) => void;
@@ -43,6 +46,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [energyLimitLevel, setEnergyLimitLevel] = useState(1);
   const [rechargeSpeedLevel, setRechargeSpeedLevel] = useState(1);
   const [hasTapBot, setHasTapBot] = useState(false);
+  const [tapBotLevel, setTapBotLevel] = useState(1);
+  const [referralBonusLevel, setReferralBonusLevel] = useState(1);
+  const [dailyRewardLevel, setDailyRewardLevel] = useState(1);
   const [loginStreak, setLoginStreak] = useState(0);
   const [dailyRewardData, setDailyRewardData] = useState<DailyRewardData | null>(null);
   const [adsBlockId, setAdsBlockId] = useState<string | null>(null);
@@ -88,6 +94,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
         setEnergyLimitLevel(data.energy_limit_level || 1);
         setRechargeSpeedLevel(data.recharge_speed_level || 1);
         setHasTapBot(data.has_tap_bot || false);
+        setTapBotLevel(data.tap_bot_level || 1);
+        setReferralBonusLevel(data.referral_bonus_level || 1);
+        setDailyRewardLevel(data.daily_reward_level || 1);
         setLoginStreak(data.login_streak || 0);
 
         if (data.has_tap_bot) {
@@ -165,6 +174,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       setEnergyLimitLevel(data.energy_limit_level || 1);
       setRechargeSpeedLevel(data.recharge_speed_level || 1);
       setHasTapBot(data.has_tap_bot || false);
+      setTapBotLevel(data.tap_bot_level || 1);
+      setReferralBonusLevel(data.referral_bonus_level || 1);
+      setDailyRewardLevel(data.daily_reward_level || 1);
       setLoginStreak(data.login_streak || 0);
     }
   };
@@ -246,6 +258,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       energyLimitLevel,
       rechargeSpeedLevel,
       hasTapBot,
+      tapBotLevel,
+      referralBonusLevel,
+      dailyRewardLevel,
       loginStreak,
       dailyRewardData,
       setDailyRewardData,
