@@ -22,6 +22,7 @@ export default function Earn() {
   } = useApp();
   const [particles, setParticles] = useState<ClickParticle[]>([]);
   const [adLoading, setAdLoading] = useState(false);
+  const [showRewardPopup, setShowRewardPopup] = useState<{show: boolean, amount: number}>({show: false, amount: 0});
   const [encouragement, setEncouragement] = useState<string>("Keep tapping!");
   const [normalEncouragements, setNormalEncouragements] = useState<string[]>(["Keep tapping!"]);
   const [lowEnergyAlerts, setLowEnergyAlerts] = useState<string[]>(["Energy running low!"]);
@@ -87,6 +88,8 @@ export default function Earn() {
         if (rewarded) {
           hapticFeedback('success');
           setEncouragement(`Awesome! +${rewardAmount.toLocaleString()} coins earned! 💰`);
+          setShowRewardPopup({ show: true, amount: rewardAmount });
+          setTimeout(() => setShowRewardPopup({ show: false, amount: 0 }), 2500);
         }
       }
     } catch (e) {
@@ -107,6 +110,8 @@ export default function Earn() {
         if (rewarded) {
           hapticFeedback('success');
           setEncouragement(`Quick bonus! +${interstitialAmount.toLocaleString()} coins! ⚡`);
+          setShowRewardPopup({ show: true, amount: interstitialAmount });
+          setTimeout(() => setShowRewardPopup({ show: false, amount: 0 }), 2500);
         }
       }
     } catch (e) {
@@ -119,6 +124,25 @@ export default function Earn() {
   return (
     <div className="page-container earn-page animate-fade-in">
       <FloatingAssets />
+      
+      <AnimatePresence>
+        {showRewardPopup.show && (
+          <div className="reward-popup-overlay">
+            <motion.div 
+              initial={{ scale: 0.5, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: -100 }}
+              className="reward-popup"
+            >
+              <div className="reward-popup-content">
+                <span className="reward-plus">+</span>
+                <span className="reward-amount">{showRewardPopup.amount.toLocaleString()}</span>
+                <span className="reward-coins">COINS</span>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
       
       <div className="balance-container">
         <h2 className="caption mt-2">Coin Balance</h2>

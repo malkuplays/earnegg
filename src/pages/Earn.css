@@ -186,3 +186,51 @@
   box-shadow: 0 0 10px var(--accent-primary-dim);
   transition: width 0.1s linear;
 }
+
+/* Reward Popup Styles */
+.reward-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.reward-popup {
+  background: rgba(13, 15, 20, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid var(--accent-primary);
+  padding: 24px 40px;
+  border-radius: 30px;
+  box-shadow: 0 0 40px var(--accent-primary-dim);
+}
+
+.reward-popup-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent-primary);
+  font-weight: 800;
+}
+
+.reward-plus {
+  font-size: 2rem;
+}
+
+.reward-amount {
+  font-size: 3.5rem;
+  letter-spacing: -2px;
+  text-shadow: 0 0 20px var(--accent-primary-dim);
+}
+
+.reward-coins {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  opacity: 0.9;
+}
