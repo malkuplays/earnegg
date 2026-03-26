@@ -17,6 +17,7 @@ import Leaderboard from './pages/Leaderboard';
 import BottomNav from './components/BottomNav';
 import DailyRewardModal from './components/DailyRewardModal';
 import PageTransition from './components/PageTransition';
+import HtmlPopup from './components/HtmlPopup';
 
 import './App.css';
 
@@ -49,6 +50,19 @@ function DailyRewardTrigger() {
       reward={dailyRewardData.reward} 
       streak={dailyRewardData.streak} 
       onClose={() => setDailyRewardData(null)} 
+    />
+  );
+}
+
+function PopupTrigger() {
+  const { popupHtml, setPopupHtml } = useApp();
+  
+  if (!popupHtml || popupHtml.trim() === '') return null;
+
+  return (
+    <HtmlPopup 
+      html={popupHtml} 
+      onClose={() => setPopupHtml(null)} 
     />
   );
 }
@@ -114,6 +128,7 @@ function App() {
 
           {/* Overlays */}
           <DailyRewardTrigger />
+          <PopupTrigger />
         </div>
       </BrowserRouter>
     </AppProvider>

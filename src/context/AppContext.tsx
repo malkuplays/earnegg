@@ -28,6 +28,8 @@ interface AppContextType {
   interstitialAmount: number;
   taskAmount: number;
   handleAdReward: (amount?: number) => Promise<boolean>;
+  popupHtml: string | null;
+  setPopupHtml: (html: string | null) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -49,6 +51,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [rewardAmount, setRewardAmount] = useState<number>(1000);
   const [interstitialAmount, setInterstitialAmount] = useState<number>(500);
   const [taskAmount, setTaskAmount] = useState<number>(2500);
+  const [popupHtml, setPopupHtml] = useState<string | null>(null);
 
   const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
@@ -128,6 +131,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       if (rAmt) setRewardAmount(parseInt(rAmt));
       if (iAmt) setInterstitialAmount(parseInt(iAmt));
       if (tAmt) setTaskAmount(parseInt(tAmt));
+
+      const p_html = data.find(c => c.key === 'popup_html')?.value;
+      if (p_html) setPopupHtml(p_html);
     }
   };
 
@@ -247,7 +253,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       rewardAmount,
       interstitialAmount,
       taskAmount,
-      handleAdReward
+      handleAdReward,
+      popupHtml,
+      setPopupHtml
     }}>
       {children}
     </AppContext.Provider>
