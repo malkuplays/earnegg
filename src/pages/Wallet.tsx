@@ -17,9 +17,15 @@ export default function Wallet() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [history, setHistory] = useState<any[]>([]);
+  const [supportMessages, setSupportMessages] = useState<any[]>([]);
+  const [newSupportMsg, setNewSupportMsg] = useState('');
+  const [supportLoading, setSupportLoading] = useState(false);
 
   useEffect(() => {
-    if (user?.id) fetchHistory();
+    if (user?.id) {
+      fetchHistory();
+      fetchSupportMessages();
+    }
   }, [user]);
 
   const fetchHistory = async () => {
@@ -30,6 +36,35 @@ export default function Wallet() {
       .order('created_at', { ascending: false })
       .limit(10);
     if (data) setHistory(data);
+  };
+
+  const fetchSupportMessages = async () => {
+    const { data } = await supabase
+      .from('support_messages')
+      .select('*')
+      .eq('player_id', user.id.toString())
+      .order('created_at', { ascending: false });
+    if (data) setSupportMessages(data);
+  };
+
+  const sendSupportMessage = async () => {
+    if (!newSupportMsg.trim() || !user?.id) return;
+    
+    setSupportLoading(true);
+    const { data, error } = await supabase
+      .from('support_messages')
+      .insert({
+        player_id: user.id.toString(),
+        message: newSupportMsg.trim()
+      })
+      .select()
+      .single();
+
+    if (!error && data) {
+      setSupportMessages(prev => [data, ...prev]);
+      setNewSupportMsg('');
+    }
+    setSupportLoading(false);
   };
 
   const handleWithdraw = async () => {
@@ -224,6 +259,57 @@ export default function Wallet() {
               <span className="text-dim">No transactions yet.</span>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Support System */}
+      <div className="support-section" style={{ marginTop: '32px' }}>
+        <h3 className="h3 section-title">Support & Queries</h3>
+        <div className="support-history glass-panel" style={{ padding: '16px', marginBottom: '16px' }}>
+          {supportMessages.length > 0 ? (
+            <div className="support-list" style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '300px', overflowY: 'auto', paddingRight: '8px' }}>
+              {supportMessages.map(msg => (
+                <div key={msg.id} className="support-thread" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div className="user-message" style={{ alignSelf: 'flex-end', background: 'var(--accent-primary)', color: '#000', padding: '10px 14px', borderRadius: '18px 18px 2px 18px', fontSize: '14px', maxWidth: '85%' }}>
+                    {msg.message}
+                  </div>
+                  {msg.reply && (
+                    <div className="admin-reply" style={{ alignSelf: 'flex-start', background: 'rgba(255,255,255,0.08)', color: 'var(--text-primary)', padding: '10px 14px', borderRadius: '18px 18px 18px 2px', fontSize: '14px', maxWidth: '85%', border: '1px solid rgba(255,255,255,0.1)' }}>
+                      <div style={{ fontSize: '10px', color: 'var(--accent-primary)', marginBottom: '4px', fontWeight: 'bold' }}>ADMIN REPLY</div>
+                      {msg.reply}
+                    </div>
+                  )}
+                  {!msg.reply && (
+                    <div style={{ fontSize: '11px', color: 'var(--text-dim)', textAlign: 'right', marginTop: '-4px' }}>
+                      Pending reply...
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-dim" style={{ textAlign: 'center', fontSize: '14px' }}>
+              No messages sent yet. How can we help?
+            </div>
+          )}
+        </div>
+
+        <div className="support-input-area glass-panel" style={{ padding: '16px' }}>
+          <textarea 
+            className="input-field" 
+            placeholder="Describe your issue or question..." 
+            style={{ minHeight: '80px', resize: 'none', marginBottom: '12px' }}
+            value={newSupportMsg}
+            onChange={(e) => setNewSupportMsg(e.target.value)}
+          />
+          <button 
+            className="w-btn w-btn-primary" 
+            style={{ width: '100%' }}
+            onClick={sendSupportMessage}
+            disabled={supportLoading || !newSupportMsg.trim()}
+          >
+            {supportLoading ? 'Sending...' : 'Send Message'}
+          </button>
         </div>
       </div>
 

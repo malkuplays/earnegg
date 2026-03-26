@@ -18,22 +18,34 @@ export default function AdsGramTask({ blockId, debug = false, rewardText, classN
     useEffect(() => {
         const handleReward = async (event: any) => {
             console.log("AdsGram Task Reward Event:", event.detail);
-            // event.detail contains the blockId
             await handleAdReward(taskAmount);
         };
 
         const node = taskRef.current;
         if (node) {
             node.addEventListener("reward", handleReward);
-            // Check if the component is already upgraded/rendered
-            setIsLoaded(true);
-        }
+            
+            // Wait for the component to actually render its content
+            // We'll check if it has internal elements or a shadow root with content
+            const checkLoading = setInterval(() => {
+                // Some AdsGram components might have a 'state' or just shadow content
+                if (node.shadowRoot && node.shadowRoot.childElementCount > 0) {
+                    setIsLoaded(true);
+                    clearInterval(checkLoading);
+                }
+            }, 500);
 
-        return () => {
-            if (node) {
+            // Timeout after 5 seconds to stop polling if never loads
+            const timeout = setTimeout(() => {
+                clearInterval(checkLoading);
+            }, 5000);
+
+            return () => {
                 node.removeEventListener("reward", handleReward);
-            }
-        };
+                clearInterval(checkLoading);
+                clearTimeout(timeout);
+            };
+        }
     }, [handleAdReward, taskAmount]);
 
     return (
@@ -44,7 +56,17 @@ export default function AdsGramTask({ blockId, debug = false, rewardText, classN
                 ref={taskRef}
                 className="adsgram-task-element"
             >
-                {/* Custom slots to match Earnegg design */}
+                {/* Custom slots to match Earnegg design and hide skeletons */}
+                <div slot="icon" className="task-icon-wrapper sponsored-icon">
+                    <Play className="text-accent" size={24} fill="currentColor" />
+                </div>
+
+                <div slot="title" className="sponsored-title">
+                    Sponsored Task
+                </div>
+
+                <div slot="description" style={{ display: 'none' }}></div>
+                
                 <div slot="reward" className="task-reward-slot">
                     <span className="coin-mini">💰</span>
                     <span>+{rewardText || taskAmount.toLocaleString()}</span>
