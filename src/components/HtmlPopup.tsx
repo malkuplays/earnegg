@@ -16,9 +16,9 @@ const HtmlPopup: React.FC<HtmlPopupProps> = ({ html, onClose }) => {
         <button className="popup-close" onClick={onClose} aria-label="Close">
           <X size={24} />
         </button>
-        <div 
-          className="popup-content" 
-          dangerouslySetInnerHTML={{ __html: html }} 
+        <div
+          className="popup-content"
+          dangerouslySetInnerHTML={{ __html: html }}
         />
       </div>
     </div>

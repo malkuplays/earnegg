@@ -79,8 +79,8 @@ export default function Wallet() {
       setMessage({ text: 'Insufficient coin balance', type: 'error' });
       return;
     }
-    if (amountCoins < 1000) {
-      setMessage({ text: 'Minimum withdrawal is 1,000 coins (₹10)', type: 'error' });
+    if (amountCoins < 100000) {
+      setMessage({ text: 'Minimum withdrawal is 100,000 coins (₹1,000)', type: 'error' });
       return;
     }
 
@@ -132,7 +132,7 @@ export default function Wallet() {
             <input 
               type="number" 
               className="input-field" 
-              placeholder="Amount in Coins (min 1000)"
+              placeholder="Amount in Coins (min 100,000)"
               value={withdrawAmount}
               onChange={(e) => setWithdrawAmount(e.target.value)}
             />
