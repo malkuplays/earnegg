@@ -51,7 +51,7 @@ export default function AdsGramTask({ blockId, debug = false, rewardText, classN
                 </div>
                 
                 <div slot="button" className="task-btn go-btn">
-                    <ChevronRight size={20} />
+                    <ChevronRight size={28} />
                 </div>
                 
                 <div slot="claim" className="task-btn claim-btn">
