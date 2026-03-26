@@ -252,8 +252,8 @@ export default function Wallet() {
                       {item.status}
                     </span>
                     {item.admin_message && (
-                      <span style={{ color: 'var(--text-dim)', fontSize: '11px', fontStyle: 'italic', maxWidth: '150px', textAlign: 'right' }}>
-                        Remark: {item.admin_message}
+                      <span style={{ color: '#fbbf24', fontSize: '11px', fontStyle: 'italic', maxWidth: '150px', textAlign: 'right' }}>
+                        {item.admin_message}
                       </span>
                     )}
                   </div>
