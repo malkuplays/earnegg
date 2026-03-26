@@ -237,12 +237,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
 
   const handleAdReward = async (amount: number = 1000) => {
     if (!user?.id) return false;
-    const { error } = await supabase.rpc('reward_ad_watch', { 
+    console.log(`Calling reward_ad_watch for ${user.id} with amount ${amount}`);
+    const { data, error } = await supabase.rpc('reward_ad_watch', { 
       p_telegram_id: user.id.toString(),
       p_reward_amount: amount
     });
-    if (!error) {
-       // Since the RPC doesn't return the new balance in the same way now, we refresh or assume success
+    
+    if (error) {
+       console.error('RPC reward_ad_watch error:', error);
+       return false;
+    }
+    
+    console.log('RPC reward_ad_watch success:', data);
+    if (data && data.success) {
        setBalance(prev => prev + amount);
        return true;
     }

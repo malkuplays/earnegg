@@ -79,10 +79,11 @@ export default function Earn() {
 
   const onWatchAd = async () => {
     if (!adsBlockId) return;
-    
+    console.log('Ad Watch triggered. adsBlockId:', adsBlockId);
     setAdLoading(true);
     try {
       const success = await showAd(adsBlockId, 'rewarded');
+      console.log('Ad show success:', success);
       if (success) {
         const rewarded = await handleAdReward(rewardAmount);
         if (rewarded) {
@@ -90,10 +91,16 @@ export default function Earn() {
           setEncouragement(`Awesome! +${rewardAmount.toLocaleString()} coins earned! 💰`);
           setShowRewardPopup({ show: true, amount: rewardAmount });
           setTimeout(() => setShowRewardPopup({ show: false, amount: 0 }), 2500);
+        } else {
+          console.error('handleAdReward failed after successful ad watch');
+          setEncouragement("Balance update failed. Check internet!");
         }
+      } else {
+        console.warn('Ad was not completed or failed to show');
+        setEncouragement("Watch full ad to get coins! 📺");
       }
     } catch (e) {
-      console.error(e);
+      console.error('AdsGram Exception:', e);
       hapticFeedback('error');
     }
     setAdLoading(false);
@@ -101,10 +108,11 @@ export default function Earn() {
 
   const onWatchInterstitial = async () => {
     if (!interstitialBlockId) return;
-    
+    console.log('Quick Ad triggered. interstitialBlockId:', interstitialBlockId);
     setAdLoading(true);
     try {
       const success = await showAd(interstitialBlockId, 'interstitial');
+      console.log('Quick show success:', success);
       if (success) {
         const rewarded = await handleAdReward(interstitialAmount);
         if (rewarded) {
@@ -112,10 +120,16 @@ export default function Earn() {
           setEncouragement(`Quick bonus! +${interstitialAmount.toLocaleString()} coins! ⚡`);
           setShowRewardPopup({ show: true, amount: interstitialAmount });
           setTimeout(() => setShowRewardPopup({ show: false, amount: 0 }), 2500);
+        } else {
+          console.error('handleAdReward failed after quick ad watch');
+          setEncouragement("Reward sync failed!");
         }
+      } else {
+        console.warn('Quick ad was skipped or failed');
+        setEncouragement("Quick ad failed to load.");
       }
     } catch (e) {
-      console.error(e);
+      console.error('AdsGram Exception (Quick):', e);
       hapticFeedback('error');
     }
     setAdLoading(false);
