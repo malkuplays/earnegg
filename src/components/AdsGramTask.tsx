@@ -44,17 +44,7 @@ export default function AdsGramTask({ blockId, debug = false, rewardText, classN
                 ref={taskRef}
                 className="adsgram-task-element"
             >
-                {/* Providing empty/custom slots to hide default AdsGram UI elements */}
-                <div slot="icon" className="task-icon-wrapper sponsored-icon">
-                    <Play className="text-accent" size={24} fill="currentColor" />
-                </div>
-                
-                <div slot="title" className="sponsored-title">
-                    Sponsored Task
-                </div>
-
-                <div slot="description" style={{ display: 'none' }}></div>
-                
+                {/* Custom slots to match Earnegg design */}
                 <div slot="reward" className="task-reward-slot">
                     <span className="coin-mini">💰</span>
                     <span>+{rewardText || taskAmount.toLocaleString()}</span>
