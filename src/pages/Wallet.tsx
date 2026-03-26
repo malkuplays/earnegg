@@ -239,18 +239,24 @@ export default function Wallet() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                   <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>- {item.amount_coins} coins</span>
-                  <span style={{ 
-                    color: item.status === 'pending' ? '#fbbf24' : (item.status === 'completed' || item.status === 'approved') ? '#4ade80' : '#ff4d4d', 
-                    fontSize: '12px', 
-                    marginTop: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    textTransform: 'capitalize'
-                  }}>
-                    {item.status === 'pending' ? <Clock size={12} /> : (item.status === 'completed' || item.status === 'approved') ? <CheckCircle2 size={12} /> : null}
-                    {item.status}
-                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', marginTop: '4px' }}>
+                    <span style={{ 
+                      color: (item.status === 'pending' || item.status === 'processing') ? '#fbbf24' : (item.status === 'completed' || item.status === 'approved') ? '#4ade80' : '#ff4d4d', 
+                      fontSize: '12px', 
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      textTransform: 'capitalize'
+                    }}>
+                      {(item.status === 'pending' || item.status === 'processing') ? <Clock size={12} /> : (item.status === 'completed' || item.status === 'approved') ? <CheckCircle2 size={12} /> : null}
+                      {item.status}
+                    </span>
+                    {item.admin_message && (
+                      <span style={{ color: 'var(--text-dim)', fontSize: '11px', fontStyle: 'italic', maxWidth: '150px', textAlign: 'right' }}>
+                        Remark: {item.admin_message}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))
