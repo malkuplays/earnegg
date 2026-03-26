@@ -102,7 +102,7 @@
 
 .go-btn {
   background: var(--bg-tertiary);
-  color: var(--text-primary);
+  color: var(--success);
   /* User requested padding of 20px */
   padding: 20px;
   border-radius: 50%; /* It will become larger but still circular or pill depending on content */

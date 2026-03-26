@@ -22,6 +22,10 @@
     --adsgram-task-border-radius: 0;
     --adsgram-task-color: #ffffff;
     --adsgram-task-padding: 0;
+    --adsgram-task-skeleton-background: transparent;
+    --adsgram-task-icon-background: transparent;
+    --adsgram-task-title-background: transparent;
+    --adsgram-task-icon-border-radius: 12px;
 }
 
 /* Align reward inside the ad content area if needed, or handle via slots */
@@ -49,7 +53,7 @@
 
 .go-btn {
     background: var(--bg-tertiary);
-    color: var(--text-primary);
+    color: var(--success);
 }
 
 .claim-btn {
