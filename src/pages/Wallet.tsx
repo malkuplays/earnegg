@@ -8,8 +8,8 @@ import './Wallet.css';
 export default function Wallet() {
   const { balance, user } = useApp();
   const navigate = useNavigate();
-  // 1000 coins = 10 Rupees -> 1 coin = 0.01 Rupees -> balance / 100
-  const MONEY_CONVERSION = balance / 100;
+  // 1000 coins = 1 Rupee -> 1 coin = 0.001 Rupees -> balance / 1000
+  const MONEY_CONVERSION = balance / 1000;
 
   const [withdrawMethod, setWithdrawMethod] = useState<string | null>(null);
   const [withdrawDetails, setWithdrawDetails] = useState('');
@@ -80,7 +80,7 @@ export default function Wallet() {
       return;
     }
     if (amountCoins < 100000) {
-      setMessage({ text: 'Minimum withdrawal is 100,000 coins (₹1,000)', type: 'error' });
+      setMessage({ text: 'Minimum withdrawal is 100,000 coins (₹100)', type: 'error' });
       return;
     }
 
@@ -138,7 +138,7 @@ export default function Wallet() {
             />
             {withdrawAmount && !isNaN(Number(withdrawAmount)) && (
               <div style={{ fontSize: '12px', color: 'var(--text-dim)', marginBottom: '15px', marginTop: '-10px' }}>
-                You will receive: ₹{(Number(withdrawAmount) / 100).toFixed(2)} INR
+                You will receive: ₹{(Number(withdrawAmount) / 1000).toFixed(2)} INR
               </div>
             )}
             
