@@ -14,7 +14,7 @@ export default function Games() {
       
       <div className="header-section">
         <h1 className="page-title">Game Hub</h1>
-        <p className="page-subtitle">Play and earn rewards!</p>
+        <p className="page-subtitle">Play and earn <span style={{ color: 'var(--accent-primary)' }}>rewards</span>!</p>
       </div>
 
       <div className="featured-section">
