@@ -21,7 +21,7 @@ interface Popup {
 }
 
 export default function EggTower() {
-  const { energy, completeEggTower } = useApp();
+  const { balance, energy, completeEggTower } = useApp();
   const navigate = useNavigate();
   
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameover'>('start');
@@ -150,6 +150,10 @@ export default function EggTower() {
   };
 
   const startGame = () => {
+    if (balance < 1000) {
+      alert('Not enough coins! (Need 1000)');
+      return;
+    }
     if (energy < 500) {
       alert('Not enough energy! (Need 500)');
       return;
@@ -321,8 +325,10 @@ export default function EggTower() {
               <p className="game-description">Stack eggs with precision. Avoid the wobble!</p>
               
               <div className="energy-cost">
+                <Coins size={16} className="icon" style={{ color: '#f0c929' }} />
+                <span style={{ marginRight: '10px' }}>Fee: 1000 Coins</span>
                 <Zap size={16} className="icon" />
-                <span>Cost: 500 Energy</span>
+                <span>500 Energy</span>
               </div>
 
               <button className="start-btn" onClick={(e) => { e.stopPropagation(); startGame(); }}>
@@ -346,10 +352,16 @@ export default function EggTower() {
                   </div>
                   <div className="reward-section">
                     <div className="reward-content">
-                        <Coins size={32} />
+                        <Coins size={32} style={{ color: coinsEarned >= 1000 ? '#f0c929' : '#ff4d4d' }} />
                         <div className="reward-info">
-                            <span className="reward-label">COINS EARNED</span>
-                            <span className="reward-amount">{loading ? '...' : `+${coinsEarned}`}</span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '14px', opacity: 0.8 }}>
+                              <span>Fee: -1000</span>
+                              <span>Earned: +{score}</span>
+                            </div>
+                            <span className="reward-label">NET BALANCE</span>
+                            <span className="reward-amount" style={{ color: score >= 1000 ? '#f0c929' : '#ff4d4d' }}>
+                              {loading ? '...' : `${score >= 1000 ? '+' : ''}${score - 1000}`}
+                            </span>
                         </div>
                     </div>
                   </div>
