@@ -35,7 +35,7 @@ export const MonetagNativeBanner: React.FC<NativeBannerProps> = ({ zoneId, userI
             </div>
             <div className="monetag-native-reward">
                 <span>+500</span>
-                <img src="/coin.png" alt="coin" />
+                <span className="coin-icon">💰</span>
             </div>
         </div>
     );
