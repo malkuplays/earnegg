@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 import { showAd } from '../lib/adsgram';
 import { Play, Zap } from 'lucide-react';
 import FloatingAssets from '../components/FloatingAssets';
+import { MonetagNativeBanner } from '../components/MonetagAds';
 import './Earn.css';
 
 interface ClickParticle {
@@ -18,7 +19,8 @@ export default function Earn() {
   const { 
     balance, energy, maxEnergy, handleTap, multitapLevel, 
     adsBlockId, interstitialBlockId, handleAdReward,
-    rewardAmount, interstitialAmount
+    rewardAmount, interstitialAmount,
+    monetagNativeId, user
   } = useApp();
   const [particles, setParticles] = useState<ClickParticle[]>([]);
   const [adLoading, setAdLoading] = useState(false);
@@ -227,6 +229,19 @@ export default function Earn() {
           <div className="energy-bar-fill" style={{ width: `${(energy / maxEnergy) * 100}%` }}></div>
         </div>
       </div>
+
+      {monetagNativeId && user && (
+        <MonetagNativeBanner 
+          zoneId={monetagNativeId} 
+          userId={user.id.toString()} 
+          onReward={() => {
+            handleAdReward(500); // Fixed 500 reward for native banner
+            setEncouragement("Native Bonus! +500 coins! 🎁");
+            setShowRewardPopup({ show: true, amount: 500 });
+            setTimeout(() => setShowRewardPopup({ show: false, amount: 0 }), 2500);
+          }}
+        />
+      )}
 
       {/* Ad Buttons Grid */}
       <div className="ad-buttons-container">

@@ -41,6 +41,10 @@ interface AppContextType {
   completeEggCatcher: (score: number) => Promise<any>;
   startEggTower: () => Promise<any>;
   completeEggTower: (score: number) => Promise<any>;
+  monetagRewardedId: string | null;
+  monetagNativeId: string | null;
+  monetagPopupId: string | null;
+  monetagInAppId: string | null;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -71,6 +75,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [spinsToday, setSpinsToday] = useState(0);
   const [freeSpinsPerDay, setFreeSpinsPerDay] = useState(1);
   const [wheelRewards, setWheelRewards] = useState<any[]>([]);
+
+  // Monetag IDs
+  const [monetagRewardedId, setMonetagRewardedId] = useState<string | null>(null);
+  const [monetagNativeId, setMonetagNativeId] = useState<string | null>(null);
+  const [monetagPopupId, setMonetagPopupId] = useState<string | null>(null);
+  const [monetagInAppId, setMonetagInAppId] = useState<string | null>(null);
 
   const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
@@ -171,6 +181,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
 
       const dailyFree = data.find(c => c.key === 'wheel_free_spins_per_day')?.value;
       if (dailyFree) setFreeSpinsPerDay(parseInt(dailyFree));
+
+      // Fetch Monetag IDs
+      const mRewarded = data.find(c => c.key === 'monetag_rewarded_id')?.value;
+      const mNative = data.find(c => c.key === 'monetag_native_id')?.value;
+      const mPopup = data.find(c => c.key === 'monetag_popup_id')?.value;
+      const mInApp = data.find(c => c.key === 'monetag_inapp_id')?.value;
+
+      if (mRewarded) setMonetagRewardedId(mRewarded);
+      if (mNative) setMonetagNativeId(mNative);
+      if (mPopup) setMonetagPopupId(mPopup);
+      if (mInApp) setMonetagInAppId(mInApp);
     }
   };
 
@@ -407,7 +428,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       spinWheel,
       completeEggCatcher,
       startEggTower,
-      completeEggTower
+      completeEggTower,
+      monetagRewardedId,
+      monetagNativeId,
+      monetagPopupId,
+      monetagInAppId
     }}>
       {children}
     </AppContext.Provider>

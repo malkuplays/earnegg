@@ -1,0 +1,71 @@
+.monetag-native-container {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.monetag-native-container:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.monetag-native-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    font-size: 10px;
+    border-bottom-left-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.monetag-native-content {
+    flex: 1;
+}
+
+.monetag-native-content h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    color: #fff;
+}
+
+.monetag-native-content p {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.monetag-native-reward {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(234, 179, 8, 0.1);
+    padding: 8px;
+    border-radius: 12px;
+    min-width: 60px;
+}
+
+.monetag-native-reward span {
+    font-weight: bold;
+    color: #eab308;
+    font-size: 14px;
+}
+
+.monetag-native-reward img {
+    width: 20px;
+    height: 20px;
+}

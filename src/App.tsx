@@ -22,6 +22,7 @@ import BottomNav from './components/BottomNav';
 import DailyRewardModal from './components/DailyRewardModal';
 import PageTransition from './components/PageTransition';
 import HtmlPopup from './components/HtmlPopup';
+import { MonetagService } from './lib/monetag';
 
 import './App.css';
 
@@ -73,6 +74,19 @@ function PopupTrigger() {
       onClose={dismissPopup} 
     />
   );
+}
+
+function MonetagInitializer() {
+  const { monetagInAppId } = useApp();
+  
+  useEffect(() => {
+    if (monetagInAppId) {
+      console.log('Initializing Monetag In-App Ads with Zone:', monetagInAppId);
+      MonetagService.initInApp(monetagInAppId);
+    }
+  }, [monetagInAppId]);
+
+  return null;
 }
 
 function App() {
@@ -137,6 +151,7 @@ function App() {
           {/* Overlays */}
           <DailyRewardTrigger />
           <PopupTrigger />
+          <MonetagInitializer />
         </div>
       </BrowserRouter>
     </AppProvider>
