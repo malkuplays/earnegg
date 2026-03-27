@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Disc } from 'lucide-react';
-import { useEffect } from 'react';
 import FloatingAssets from '../components/FloatingAssets';
 import OnlineStatus from '../components/OnlineStatus';
 import './Games.css';
