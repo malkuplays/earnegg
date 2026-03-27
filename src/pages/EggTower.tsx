@@ -21,7 +21,7 @@ interface Popup {
 }
 
 export default function EggTower() {
-  const { balance, energy, completeEggTower } = useApp();
+  const { balance, energy, startEggTower, completeEggTower } = useApp();
   const navigate = useNavigate();
   
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameover'>('start');
@@ -149,7 +149,7 @@ export default function EggTower() {
     hapticFeedback('light');
   };
 
-  const startGame = () => {
+  const startGame = async () => {
     if (balance < 1000) {
       alert('Not enough coins! (Need 1000)');
       return;
@@ -158,6 +158,21 @@ export default function EggTower() {
       alert('Not enough energy! (Need 500)');
       return;
     }
+
+    setLoading(true);
+    try {
+      const res = await startEggTower();
+      if (!res.success) {
+        alert(res.message || 'Failed to start game');
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      alert('Error starting game');
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
     
     setScore(0);
     setTower([]);
@@ -331,8 +346,12 @@ export default function EggTower() {
                 <span>500 Energy</span>
               </div>
 
-              <button className="start-btn" onClick={(e) => { e.stopPropagation(); startGame(); }}>
-                START STACKING
+              <button 
+                className="start-btn" 
+                onClick={(e) => { e.stopPropagation(); startGame(); }}
+                disabled={loading}
+              >
+                {loading ? 'STARTING...' : 'START STACKING'}
               </button>
             </motion.div>
           )}

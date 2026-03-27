@@ -39,6 +39,7 @@ interface AppContextType {
   wheelRewards: any[];
   spinWheel: () => Promise<any>;
   completeEggCatcher: (score: number) => Promise<any>;
+  startEggTower: () => Promise<any>;
   completeEggTower: (score: number) => Promise<any>;
 }
 
@@ -333,10 +334,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
     return data || { success: false, message: 'Unknown error' };
   };
 
+  const startEggTower = async () => {
+    if (!user?.id) return { success: false, message: 'User not logged in' };
+    
+    const { data, error } = await supabase.rpc('start_egg_tower', { 
+      p_player_id: user.id.toString()
+    });
+
+    if (error) {
+      console.error('RPC start_egg_tower error:', error);
+      return { success: false, message: error.message };
+    }
+
+    if (data && data.success) {
+      setBalance(data.new_balance);
+      setEnergy(data.new_energy);
+      return data;
+    }
+
+    return data || { success: false, message: 'Unknown error' };
+  };
+
   const completeEggTower = async (score: number) => {
     if (!user?.id) return { success: false, message: 'User not logged in' };
     
     const { data, error } = await supabase.rpc('complete_egg_tower', { 
+      p_player_id: user.id.toString(),
       p_score: score
     });
 
@@ -347,7 +370,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
 
     if (data && data.success) {
       setBalance(data.new_balance);
-      setEnergy(data.new_energy);
       return data;
     }
 
@@ -391,6 +413,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       wheelRewards,
       spinWheel,
       completeEggCatcher,
+      startEggTower,
       completeEggTower
     }}>
       {children}
