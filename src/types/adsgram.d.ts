@@ -1,4 +1,4 @@
-import { DOMAttributes } from "react";
+import { DOMAttributes, HTMLAttributes } from "react";
 
 export interface ShowPromiseResult { 
     done: boolean; 
@@ -44,7 +44,7 @@ declare global {
 }
 
 // React JSX Support for <adsgram-task>
-type CustomElement<T> = Partial<T & DOMAttributes<T> & { children: any; className?: string; ref?: any }>;
+type CustomElement<T> = Partial<HTMLAttributes<T> & DOMAttributes<T> & { children: any; className?: string; ref?: any }>;
 
 declare module "react/jsx-runtime" {
     namespace JSX {
