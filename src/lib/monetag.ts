@@ -1,5 +1,4 @@
-import createAdHandler from 'monetag-tg-sdk';
-
+// Rewriting global service for Monetag
 export interface MonetagRewardResult {
     success: boolean;
     reward_event_type?: string;
