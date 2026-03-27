@@ -46,7 +46,7 @@ export default function EggTower() {
   const lastTimeRef = useRef(0);
 
   const LAYER_HEIGHT = 42; // pixels
-  const BASE_Y = 60; // pixels from bottom
+  const BASE_Y = 140; // pixels from bottom (base 100 + height 40)
   const CRANE_Y = 150; // pixels from top
   const WOBBLE_LIMIT = 40; // max cumulative offset before collapse
 
@@ -255,7 +255,7 @@ export default function EggTower() {
 
         {/* Crane & Oscillating Egg */}
         <div className="crane-container">
-          <div className="crane-line" />
+          <div className="crane-line" style={{ left: `${craneX}%` }} />
           {!fallingEgg && (
             <div className="crane-egg egg" style={{ left: `${craneX}%` }} />
           )}
