@@ -285,6 +285,108 @@
     border-radius: 20px;
 }
 
+/* Enhanced Game Over UI */
+.game-over-header {
+  margin-bottom: 24px;
+}
+
+.crown-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 10px rgba(240, 201, 41, 0.5));
+}
+
+.stat-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.reward-section-v2 {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.reward-content-v2 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.reward-icon-container {
+  width: 56px;
+  height: 56px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reward-details {
+  flex: 1;
+  text-align: left;
+}
+
+.fee-breakdown {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.net-balance-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.net-label {
+  font-size: 10px;
+  color: #9da3b4;
+  letter-spacing: 1px;
+}
+
+.net-amount {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.hub-btn-v3 {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 16px;
+  width: 100%;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hub-btn-v3:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* Animations */
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out;

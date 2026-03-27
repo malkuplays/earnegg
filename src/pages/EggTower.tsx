@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Zap, Coins } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
+import { showAd } from '../lib/adsgram';
 import './EggTower.css';
 
 interface TowerLayer {
@@ -21,7 +22,7 @@ interface Popup {
 }
 
 export default function EggTower() {
-  const { balance, energy, startEggTower, completeEggTower } = useApp();
+  const { balance, energy, startEggTower, completeEggTower, interstitialBlockId } = useApp();
   const navigate = useNavigate();
   
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameover'>('start');
@@ -32,7 +33,6 @@ export default function EggTower() {
   const [craneX, setCraneX] = useState(50);
   const [fallingEgg, setFallingEgg] = useState<{ x: number, y: number } | null>(null);
   const [popups, setPopups] = useState<Popup[]>([]);
-  const [coinsEarned, setCoinsEarned] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const gameLoopRef = useRef<number | null>(null);
@@ -222,15 +222,32 @@ export default function EggTower() {
     try {
       const data = await completeEggTower(scoreRef.current);
       
+      
       if (data?.success) {
-        setCoinsEarned(data.coins_earned);
-      } else {
-        setCoinsEarned(scoreRef.current);
+        // We could use data.coins_earned if needed, but we reflect score in UI
       }
     } catch (err) {
-      setCoinsEarned(scoreRef.current);
+      console.error("Failed to complete game:", err);
     }
     setLoading(false);
+  };
+
+  const handlePlayAgain = async () => {
+    if (interstitialBlockId) {
+      setLoading(true);
+      await showAd(interstitialBlockId, 'interstitial');
+      setLoading(false);
+    }
+    startGame();
+  };
+
+  const handleBackToHub = async () => {
+    if (interstitialBlockId) {
+      setLoading(true);
+      await showAd(interstitialBlockId, 'interstitial');
+      setLoading(false);
+    }
+    navigate('/games');
   };
 
   useEffect(() => {
@@ -357,39 +374,61 @@ export default function EggTower() {
           )}
 
           {gameState === 'gameover' && (
-            <motion.div className="game-over-overlay">
-              <motion.div className="game-over-card glass-panel">
-                <h1 className="game-over-title">Tower Collapsed!</h1>
+            <motion.div 
+              className="game-over-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <motion.div 
+                className="game-over-card glass-panel"
+                initial={{ scale: 0.8, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                transition={{ type: "spring", damping: 15 }}
+              >
+                <div className="game-over-header">
+                  <div className="crown-icon">👑</div>
+                  <h1 className="game-over-title">Tower Collapsed!</h1>
+                </div>
+
                 <div className="game-over-stats">
-                  <div className="stat-group">
-                    <span className="stat-label">FINAL SCORE</span>
-                    <span className="stat-value">{score}</span>
+                  <div className="stat-row">
+                    <div className="stat-card">
+                      <span className="stat-label">FINAL SCORE</span>
+                      <span className="stat-value">{score}</span>
+                    </div>
+                    <div className="stat-card">
+                      <span className="stat-label">HEIGHT</span>
+                      <span className="stat-value">{tower.length}</span>
+                    </div>
                   </div>
-                  <div className="stat-group">
-                    <span className="stat-label">MAX HEIGHT</span>
-                    <span className="stat-value">{tower.length} Eggs</span>
-                  </div>
-                  <div className="reward-section">
-                    <div className="reward-content">
-                        <Coins size={32} style={{ color: coinsEarned >= 1000 ? '#f0c929' : '#ff4d4d' }} />
-                        <div className="reward-info">
-                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '14px', opacity: 0.8 }}>
-                              <span>Fee: -1000</span>
-                              <span>Earned: +{score}</span>
+
+                  <div className="reward-section-v2">
+                    <div className="reward-content-v2">
+                        <div className="reward-icon-container">
+                          <Coins size={32} style={{ color: score >= 1000 ? '#f0c929' : '#ff4d4d' }} />
+                        </div>
+                        <div className="reward-details">
+                            <div className="fee-breakdown">
+                              <span className="fee-item">Fee: -1000</span>
+                              <span className="fee-item">Earned: +{score}</span>
                             </div>
-                            <span className="reward-label">NET BALANCE</span>
-                            <span className="reward-amount" style={{ color: score >= 1000 ? '#f0c929' : '#ff4d4d' }}>
-                              {loading ? '...' : `${score >= 1000 ? '+' : ''}${score - 1000}`}
-                            </span>
+                            <div className="net-balance-container">
+                              <span className="net-label">NET BALANCE</span>
+                              <span className="net-amount" style={{ color: score >= 1000 ? '#4ade80' : '#ff4d4d' }}>
+                                {loading ? '...' : `${score >= 1000 ? '+' : ''}${score - 1000}`}
+                              </span>
+                            </div>
                         </div>
                     </div>
                   </div>
                 </div>
+
                 <div className="game-over-actions">
-                  <button className="restart-btn-v2" onClick={(e) => { e.stopPropagation(); startGame(); }}>
+                  <button className="restart-btn-v2" onClick={(e) => { e.stopPropagation(); handlePlayAgain(); }} disabled={loading}>
+                    <Zap size={20} fill="currentColor" />
                     TRY AGAIN
                   </button>
-                  <button className="hub-btn-v2" onClick={(e) => { e.stopPropagation(); navigate('/games'); }}>
+                  <button className="hub-btn-v3" onClick={(e) => { e.stopPropagation(); handleBackToHub(); }} disabled={loading}>
                     BACK TO HUB
                   </button>
                 </div>
