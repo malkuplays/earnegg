@@ -294,18 +294,26 @@ export default function EggCatcher() {
                 <span>Cost: 500 Energy</span>
               </div>
 
-              <div className="game-legend glass-panel" style={{ padding: '20px', marginBottom: '30px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div className="game-object egg" style={{ position: 'relative', top: 0, left: 0, transform: 'none' }} />
-                    <span style={{ fontSize: '0.8rem' }}>Normal: +10</span>
+              <div className="game-legend">
+                <div className="legend-item">
+                    <div className="legend-icon">
+                      <div className="game-object egg" />
+                    </div>
+                    <span className="legend-text">Normal: +10</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div className="game-object egg gold" style={{ position: 'relative', top: 0, left: 0, transform: 'none' }} />
-                    <span style={{ fontSize: '0.8rem' }}>Gold: +50</span>
+                <div className="legend-item">
+                    <div className="legend-icon">
+                      <div className="game-object egg gold" />
+                    </div>
+                    <span className="legend-text">Gold: +50</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', gridColumn: 'span 2', justifyContent: 'center' }}>
-                    <div className="game-object bomb" style={{ position: 'relative', top: 0, left: 0, transform: 'none' }} />
-                    <span style={{ fontSize: '0.8rem' }}>Bomb: -1 Life</span>
+                <div className="legend-item full-width">
+                    <div className="legend-icon">
+                      <div className="game-object bomb">
+                        <div className="bomb-fuse" />
+                      </div>
+                    </div>
+                    <span className="legend-text">Bomb: -1 Life</span>
                 </div>
               </div>
 
