@@ -225,7 +225,8 @@
 
 .reward-amount {
   font-size: 3.5rem;
-  letter-spacing: -2px;
+  font-weight: 850;
+  letter-spacing: -0.01em;
   text-shadow: 0 0 20px var(--accent-primary-dim);
 }
 

@@ -39,9 +39,10 @@
 
 .reward-amount {
   font-size: 2.2rem;
-  font-weight: 950;
+  font-weight: 850;
   color: var(--accent-primary);
   line-height: 1;
+  letter-spacing: -0.01em;
 }
 
 .reward-unit {
