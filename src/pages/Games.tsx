@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Disc } from 'lucide-react';
 import FloatingAssets from '../components/FloatingAssets';
 import OnlineStatus from '../components/OnlineStatus';
+import AdsterraBanner from '../components/AdsterraBanner';
 import './Games.css';
 
 export default function Games() {
@@ -48,7 +49,9 @@ export default function Games() {
           <div className="pulse-overlay"></div>
         </motion.div>
       </div>
-
+      
+      <AdsterraBanner />
+ 
       <div className="mini-games-section">
         <div className="section-header">
           <span className="section-label">Mini Games</span>
