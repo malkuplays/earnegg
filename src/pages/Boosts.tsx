@@ -116,6 +116,8 @@ export default function Boosts() {
         </div>
       </div>
 
+      <AdsterraBanner />
+
       <div className="boosts-list">
         {upgrades.map((upgrade) => {
           const isMaxxed = upgrade.level === upgrade.maxLevel || upgrade.level === 'Active';
