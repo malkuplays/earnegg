@@ -167,9 +167,10 @@ export default function EggTower() {
     fallingEggRef.current = null;
     
     setGameState('playing');
-    gameStateRef.current = 'start';
+    gameStateRef.current = 'start'; // Keep it start until countdown ends
     setCountdown(3);
     hapticFeedback('medium');
+    lastTimeRef.current = 0; // Reset time
   };
 
   useEffect(() => {
@@ -185,6 +186,7 @@ export default function EggTower() {
         setCountdown(null);
         gameStateRef.current = 'playing';
         lastTimeRef.current = performance.now();
+        if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
         gameLoopRef.current = requestAnimationFrame(updateGame);
       }, 500);
     }
@@ -223,9 +225,7 @@ export default function EggTower() {
   const cameraOffset = Math.max(0, (tower.length - 5) * LAYER_HEIGHT);
 
   return (
-    <div className="page-container egg-tower-page animate-fade-in" onClick={handleDrop}>
-      <FloatingAssets />
-      
+    <div className="egg-tower-page animate-fade-in" onClick={handleDrop}>
       <div 
         ref={containerRef}
         className="game-canvas-container"

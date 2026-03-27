@@ -14,6 +14,14 @@
   max-width: 500px;
   margin: 0 auto;
   overflow: hidden;
+  background: #0d0f14;
+}
+
+.egg {
+  background: #fdfdfd;
+  border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: inset -4px -4px 10px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .game-bg-elements {
@@ -31,18 +39,19 @@
 /* Header */
 .game-header {
   position: absolute;
-  top: 55px;
+  top: 60px;
   left: 20px;
   right: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 100;
+  pointer-events: none;
 }
 
 .back-btn {
   background: rgba(255, 255, 255, 0.1);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   width: 44px;
   height: 44px;
   border-radius: 12px;
@@ -52,6 +61,7 @@
   color: white;
   cursor: pointer;
   backdrop-filter: blur(10px);
+  pointer-events: auto;
 }
 
 .game-stats-top {
@@ -128,23 +138,20 @@
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  transition: transform 0.3s ease-out;
   z-index: 10;
 }
 
 .tower-base {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
   width: 150px;
   height: 40px;
   background: linear-gradient(135deg, #2a2d3e 0%, #1a1c24 100%);
   border-top: 4px solid #f0c929;
-  border-radius: 8px 8px 0 0;
+  border-radius: 12px 12px 0 0;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  flex-shrink: 0;
-  margin-bottom: 20px;
-  position: relative;
+  transform: translateX(-50%);
   z-index: 5;
 }
 
@@ -189,7 +196,33 @@
   z-index: 200;
 }
 
-.countdown-overlay, .start-overlay, .game-over-overlay {
+.countdown-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  background: rgba(13, 15, 20, 0.4);
+}
+
+.countdown-number {
+  font-size: 120px;
+  font-weight: 900;
+  color: #f0c929;
+  text-shadow: 0 0 30px rgba(240, 201, 41, 0.5);
+  animation: countdown-scale 1s ease-out infinite;
+}
+
+@keyframes countdown-scale {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1.2); opacity: 1; }
+}
+
+.start-overlay, .game-over-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -200,8 +233,8 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  background: rgba(13, 15, 20, 0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(13, 15, 20, 0.95);
+  backdrop-filter: blur(12px);
 }
 
 .game-title {
