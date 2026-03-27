@@ -60,7 +60,7 @@
 
 .game-header {
   position: absolute;
-  top: 20px;
+  top: 55px; /* Increased for notch protection */
   left: 20px;
   right: 20px;
   display: flex;
@@ -69,15 +69,9 @@
   z-index: 100;
 }
 
-.game-stats-bottom {
-  position: absolute;
-  bottom: 30px;
-  left: 20px;
-  right: 20px;
+.game-stats-top {
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  z-index: 100;
+  gap: 12px;
 }
 
 .game-stat-item {

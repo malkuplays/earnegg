@@ -254,6 +254,26 @@ export default function EggCatcher() {
           <button className="back-btn" onClick={() => navigate('/games')}>
             <ArrowLeft size={24} />
           </button>
+          
+          <div className="game-stats-top">
+            <div className="game-stat-item">
+              <span className="game-stat-label">Score</span>
+              <span className="game-stat-value score">{score}</span>
+            </div>
+            <div className="game-stat-item">
+              <span className="game-stat-label">Lives</span>
+              <div className="game-lives">
+                {[...Array(3)].map((_, i) => (
+                  <Heart 
+                    key={i} 
+                    size={16} 
+                    className={`heart-icon ${i >= lives ? 'lost' : ''}`}
+                    fill={i < lives ? "#ff4d4d" : "transparent"}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         {objects.map(obj => (
@@ -283,25 +303,7 @@ export default function EggCatcher() {
           style={{ left: `${basketX}%` }}
         />
 
-        <div className="game-stats-bottom">
-          <div className="game-stat-item">
-            <span className="game-stat-label">Score</span>
-            <span className="game-stat-value score">{score}</span>
-          </div>
-          <div className="game-stat-item">
-            <span className="game-stat-label">Lives</span>
-            <div className="game-lives">
-              {[...Array(3)].map((_, i) => (
-                <Heart 
-                  key={i} 
-                  size={16} 
-                  className={`heart-icon ${i >= lives ? 'lost' : ''}`}
-                  fill={i < lives ? "#ff4d4d" : "transparent"}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+
 
         <AnimatePresence>
           {countdown !== null && (
