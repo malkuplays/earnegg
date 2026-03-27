@@ -1,26 +1,17 @@
 .adsgram-task-wrapper {
     width: 100%;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    gap: 16px; /* Matches .task-card gap */
-    position: relative;
-    overflow: hidden;
 }
 
 .adsgram-task-wrapper.loading {
     opacity: 0;
     pointer-events: none;
     height: 0;
-    margin: 0;
-    padding: 0;
     overflow: hidden;
 }
 
 .adsgram-task-wrapper.loaded {
     opacity: 1;
     height: auto;
-    margin-bottom: 12px;
 }
 
 .adsgram-task-element {
@@ -34,78 +25,4 @@
     --adsgram-task-icon-border-radius: 12px;
     --adsgram-task-icon-size: 0;
     --adsgram-task-title-font-size: 0;
-}
-
-/* Align reward inside the ad content area if needed, or handle via slots */
-.task-reward-slot {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--accent-primary);
-    margin-top: 2px;
-}
-
-.sponsored-icon {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    background: rgba(240, 201, 41, 0.15);
-    box-shadow: 0 0 15px rgba(240, 201, 41, 0.1);
-}
-
-.sponsored-title {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: var(--text-primary);
-}
-
-.task-btn {
-    width: 44px; /* Matches go-btn size */
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-}
-
-.go-btn {
-    background: var(--bg-tertiary);
-    color: var(--success);
-}
-
-.claim-btn {
-    background: var(--accent-primary);
-    color: #0d0f14;
-    animation: pulse-gold 2s infinite;
-}
-
-@keyframes pulse-gold {
-    0% { box-shadow: 0 0 0 0 rgba(240, 201, 41, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(240, 201, 41, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(240, 201, 41, 0); }
-}
-
-.task-btn:active {
-    transform: scale(0.9);
-}
-
-.task-done-status {
-    color: var(--success);
-    font-weight: 700;
-    font-size: 0.85rem;
-    padding-right: 8px;
-}
-
-/* Extra polishing for the sponsored ribbon */
-.adsgram-task-wrapper.ad-task::before {
-    z-index: 20;
-}
-
-.task-card.ad-task .adsgram-task-wrapper {
-    background: transparent;
 }

@@ -18,16 +18,21 @@
   gap: 12px;
 }
 
-.task-card {
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  gap: 16px;
+.task-card, .adsgram-task-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  padding: 16px !important;
+  gap: 16px !important;
   transition: transform 0.2s, background-color 0.2s;
+  min-height: 80px;
 }
 
-.task-card:active {
+.task-card:active, .adsgram-task-wrapper:active {
   transform: scale(0.98);
+}
+
+.adsgram-task-wrapper.loaded {
+  margin-bottom: 0; /* Let .tasks-list gap handle it */
 }
 
 .task-card.completed {
@@ -36,14 +41,14 @@
 }
 
 /* Sponsored Ad Task */
-.task-card.ad-task {
+.task-card.ad-task, .adsgram-task-wrapper.ad-task {
   border: 1.5px dashed var(--accent-primary-dim);
   background: linear-gradient(135deg, rgba(240, 201, 41, 0.08) 0%, transparent 100%);
   position: relative;
   overflow: hidden;
 }
 
-.task-card.ad-task::before {
+.task-card.ad-task::before, .adsgram-task-wrapper.ad-task::before {
   content: "SPONSORED";
   position: absolute;
   top: 6px;
@@ -58,61 +63,85 @@
   z-index: 10;
 }
 
-.task-card.ad-task .task-icon-wrapper {
-  background: rgba(240, 201, 41, 0.15);
-  box-shadow: 0 0 15px rgba(240, 201, 41, 0.1);
+.task-icon-wrapper, .sponsored-icon {
+  background: var(--bg-tertiary) !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
 }
 
-.text-success { color: var(--success); }
-.text-accent { color: var(--accent-primary); }
-
-.task-icon-wrapper {
-  background: var(--bg-tertiary);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.task-card.ad-task .task-icon-wrapper, .sponsored-icon {
+  background: rgba(240, 201, 41, 0.15) !important;
+  box-shadow: 0 0 15px rgba(240, 201, 41, 0.1) !important;
 }
 
-.task-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.task-info, .adsgram-task-element {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
 }
 
-.task-reward {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.task-info h3, .sponsored-title {
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+}
+
+.task-reward, .task-reward-slot {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin-top: 2px !important;
+}
+
+.reward-amount, .task-reward-slot span {
+  color: var(--accent-primary) !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
 }
 
 .coin-mini {
   font-size: 0.9rem;
 }
 
-.reward-amount {
-  color: var(--accent-primary);
-  font-weight: 700;
-  font-size: 0.9rem;
+/* Action Buttons */
+.go-btn, .task-btn, .claim-btn {
+  background: var(--bg-tertiary) !important;
+  color: var(--success) !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transition: all 0.2s ease !important;
+  padding: 0 !important;
 }
 
-.go-btn {
-  background: var(--bg-tertiary);
-  color: var(--success);
-  /* User requested padding of 20px */
-  padding: 20px;
-  border-radius: 50%; /* It will become larger but still circular or pill depending on content */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
+.claim-btn {
+  background: var(--accent-primary) !important;
+  color: #0d0f14 !important;
+  animation: pulse-gold 2s infinite;
 }
 
-.task-card:active .go-btn {
-  background: var(--accent-primary-dim);
-  color: var(--accent-primary);
+@keyframes pulse-gold {
+  0% { box-shadow: 0 0 0 0 rgba(240, 201, 41, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(240, 201, 41, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(240, 201, 41, 0); }
 }
+
+.go-btn:active, .task-btn:active, .claim-btn:active {
+  transform: scale(0.9);
+  background: var(--accent-primary-dim) !important;
+  color: var(--accent-primary) !important;
+}
+
+.text-success { color: var(--success); }
+.text-accent { color: var(--accent-primary); }
