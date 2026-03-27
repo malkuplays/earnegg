@@ -41,7 +41,7 @@ export default function EggCatcher() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const spawnObject = useCallback(() => {
-    const types: ('egg' | 'gold' | 'bomb')[] = ['egg', 'egg', 'egg', 'gold', 'gold', 'bomb', 'bomb'];
+    const types: ('egg' | 'gold' | 'bomb')[] = ['egg', 'egg', 'gold', 'gold', 'gold', 'gold', 'bomb', 'bomb'];
     const type = types[Math.floor(Math.random() * types.length)];
     const newObj: GameObject = {
       id: Date.now() + Math.random(),
@@ -109,7 +109,12 @@ export default function EggCatcher() {
       }
 
       if (nextY > 100) {
-        // Missed - could add penalty here if desired
+        // Missed normal egg penalty
+        if (obj.type === 'egg') {
+          scoreRef.current = Math.max(0, scoreRef.current - 10);
+          addPopup(obj.x, 90, '-10');
+          hapticFeedback('warning');
+        }
       } else {
         nextObjects.push({ ...obj, y: nextY });
       }
@@ -245,26 +250,6 @@ export default function EggCatcher() {
           <button className="back-btn" onClick={() => navigate('/games')}>
             <ArrowLeft size={24} />
           </button>
-          
-          <div className="game-stats-top">
-            <div className="game-stat-item">
-              <span className="game-stat-label">Score</span>
-              <span className="game-stat-value score">{score}</span>
-            </div>
-            <div className="game-stat-item">
-              <span className="game-stat-label">Lives</span>
-              <div className="game-lives">
-                {[...Array(3)].map((_, i) => (
-                  <Heart 
-                    key={i} 
-                    size={16} 
-                    className={`heart-icon ${i >= lives ? 'lost' : ''}`}
-                    fill={i < lives ? "#ff4d4d" : "transparent"}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
 
         {objects.map(obj => (
@@ -293,6 +278,26 @@ export default function EggCatcher() {
           className="game-basket"
           style={{ left: `${basketX}%` }}
         />
+
+        <div className="game-stats-bottom">
+          <div className="game-stat-item">
+            <span className="game-stat-label">Score</span>
+            <span className="game-stat-value score">{score}</span>
+          </div>
+          <div className="game-stat-item">
+            <span className="game-stat-label">Lives</span>
+            <div className="game-lives">
+              {[...Array(3)].map((_, i) => (
+                <Heart 
+                  key={i} 
+                  size={16} 
+                  className={`heart-icon ${i >= lives ? 'lost' : ''}`}
+                  fill={i < lives ? "#ff4d4d" : "transparent"}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
 
         <AnimatePresence>
           {countdown !== null && (
