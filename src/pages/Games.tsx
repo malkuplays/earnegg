@@ -12,11 +12,11 @@ export default function Games() {
   return (
     <div className="page-container games-page animate-fade-in">
       <FloatingAssets />
-      <OnlineStatus />
       
       <div className="header-section">
         <h1 className="page-title">Game Hub</h1>
         <p className="page-subtitle">Play and earn <span style={{ color: 'var(--accent-primary)' }}>rewards</span>!</p>
+        <OnlineStatus />
       </div>
 
       <div className="featured-section">
