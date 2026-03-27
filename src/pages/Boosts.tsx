@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { supabase } from '../lib/supabase';
 import { Zap, Battery, Timer, Bot, ChevronRight, UserPlus, Gift, Cpu } from 'lucide-react';
 import { motion } from 'framer-motion';
+import AdsterraBanner from '../components/AdsterraBanner';
 import './Boosts.css';
 
 export default function Boosts() {
