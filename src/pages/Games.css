@@ -1,8 +1,9 @@
 .games-page {
   display: flex;
   flex-direction: column;
-  padding: 24px;
   gap: 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .header-section {

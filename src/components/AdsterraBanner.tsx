@@ -31,7 +31,8 @@ const AdsterraBanner = () => {
         display: 'flex', 
         justifyContent: 'center',
         margin: '15px 0',
-        minHeight: '50px'
+        minHeight: '50px',
+        overflow: 'hidden'
       }}
     >
       {/* Ad will be injected here */}
