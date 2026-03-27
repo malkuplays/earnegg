@@ -12,6 +12,8 @@ import Wallet from './pages/Wallet';
 import Legal from './pages/Legal';
 import Boosts from './pages/Boosts';
 import Leaderboard from './pages/Leaderboard';
+import Games from './pages/Games';
+import Wheel from './pages/Wheel';
 
 // Components
 import BottomNav from './components/BottomNav';
@@ -32,6 +34,8 @@ function AppRoutes() {
         <Route path="/tasks" element={<PageTransition><Tasks /></PageTransition>} />
         <Route path="/boosts" element={<PageTransition><Boosts /></PageTransition>} />
         <Route path="/leaderboard" element={<PageTransition><Leaderboard /></PageTransition>} />
+        <Route path="/games" element={<PageTransition><Games /></PageTransition>} />
+        <Route path="/wheel" element={<PageTransition><Wheel /></PageTransition>} />
         <Route path="/friends" element={<PageTransition><Friends /></PageTransition>} />
         <Route path="/wallet" element={<PageTransition><Wallet /></PageTransition>} />
         <Route path="/legal" element={<PageTransition><Legal /></PageTransition>} />

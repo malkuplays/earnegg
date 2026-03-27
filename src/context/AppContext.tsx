@@ -33,6 +33,11 @@ interface AppContextType {
   handleAdReward: (amount?: number) => Promise<boolean>;
   popupHtml: string | null;
   dismissPopup: () => void;
+  // Wheel of Fortune
+  spinsToday: number;
+  freeSpinsPerDay: number;
+  wheelRewards: any[];
+  spinWheel: () => Promise<any>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -58,6 +63,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [interstitialAmount, setInterstitialAmount] = useState<number>(500);
   const [taskAmount, setTaskAmount] = useState<number>(2500);
   const [popupHtml, setPopupHtml] = useState<string | null>(null);
+
+  // Wheel state
+  const [spinsToday, setSpinsToday] = useState(0);
+  const [freeSpinsPerDay, setFreeSpinsPerDay] = useState(1);
+  const [wheelRewards, setWheelRewards] = useState<any[]>([]);
 
   const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
@@ -114,6 +124,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
            });
            setBalance(prev => prev + dailyRes.data.reward);
         }
+
+        // Fetch wheel spins today
+        const { data: spinData } = await supabase
+          .from('wheel_spins')
+          .select('id')
+          .eq('player_id', safeId)
+          .gte('created_at', new Date().toISOString().split('T')[0]);
+        
+        if (spinData) {
+          setSpinsToday(spinData.length);
+        }
       } else {
         // Fallback
         setBalance(0);
@@ -148,6 +169,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
           setPopupHtml(p_html);
         }
       }
+
+      const bridgeRewards = data.find(c => c.key === 'wheel_rewards')?.value;
+      if (bridgeRewards) setWheelRewards(JSON.parse(bridgeRewards));
+
+      const dailyFree = data.find(c => c.key === 'wheel_free_spins_per_day')?.value;
+      if (dailyFree) setFreeSpinsPerDay(parseInt(dailyFree));
     }
   };
 
@@ -256,6 +283,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
     return false;
   };
 
+  const spinWheel = async () => {
+    if (!user?.id) return { success: false, message: 'User not logged in' };
+    
+    const { data, error } = await supabase.rpc('spin_wheel', { 
+      p_telegram_id: user.id.toString() 
+    });
+
+    if (error) {
+      console.error('RPC spin_wheel error:', error);
+      return { success: false, message: error.message };
+    }
+
+    if (data && data.success) {
+      // Reward is already applied in DB, we need to refresh balance/energy
+      setSpinsToday(data.spins_today);
+      if (data.reward.type === 'coins') {
+        setBalance(prev => prev + Number(data.reward.amount));
+      } else if (data.reward.type === 'energy') {
+        setEnergy(prev => Math.min(prev + Number(data.reward.amount), maxEnergy));
+      }
+      return data;
+    }
+
+    return data || { success: false, message: 'Unknown error' };
+  };
+
   return (
     <AppContext.Provider value={{ 
       balance, 
@@ -287,7 +340,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
           localStorage.setItem('seen_popup_html', popupHtml);
           setPopupHtml(null);
         }
-      }
+      },
+      spinsToday,
+      freeSpinsPerDay,
+      wheelRewards,
+      spinWheel
     }}>
       {children}
     </AppContext.Provider>
