@@ -49,12 +49,23 @@ export default function AdsGramTask({ blockId, debug = false, rewardText, classN
     }, [handleAdReward, taskAmount]);
 
     return (
-        <div className={`adsgram-task-wrapper ${isLoaded ? 'loaded' : 'loading'} ${className}`}>
+        <div className={`adsgram-task-wrapper ${isLoaded ? 'loaded' : 'loading-skeleton'} ${className}`}>
+            {!isLoaded && (
+                <div className="task-skeleton">
+                    <div className="skeleton-icon pulse"></div>
+                    <div className="skeleton-info">
+                        <div className="skeleton-line pulse title"></div>
+                        <div className="skeleton-line pulse reward"></div>
+                    </div>
+                    <div className="skeleton-btn pulse"></div>
+                </div>
+            )}
             <adsgram-task
                 data-block-id={blockId}
                 data-debug={debug ? "true" : "false"}
                 ref={taskRef}
                 className="adsgram-task-element"
+                style={{ visibility: isLoaded ? 'visible' : 'hidden', position: isLoaded ? 'relative' : 'absolute' }}
             >
                 {/* Custom slots to match Earnegg design and hide skeletons */}
                 <div slot="icon" className="task-icon-wrapper sponsored-icon">

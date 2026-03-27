@@ -2,6 +2,8 @@ import type { AdController, ShowPromiseResult } from '../types/adsgram';
 
 export type AdType = 'rewarded' | 'interstitial';
 
+const controllers: Record<string, AdController> = {};
+
 export async function showAd(blockId: string, type: AdType = 'rewarded'): Promise<boolean> {
     if (!window || !window.Adsgram) {
         console.error('AdsGram SDK not loaded');
@@ -9,14 +11,16 @@ export async function showAd(blockId: string, type: AdType = 'rewarded'): Promis
     }
 
     try {
-        const controller: AdController = (window as any).Adsgram.init({ blockId });
-        const result: ShowPromiseResult = await controller.show();
+        // Reuse or initialize controller
+        if (!controllers[blockId]) {
+            controllers[blockId] = (window as any).Adsgram.init({ blockId });
+        }
+        
+        const result: ShowPromiseResult = await controllers[blockId].show();
         
         if (type === 'rewarded') {
-            // Rewarded must be completed
             return result.done && !result.error;
         } else {
-            // Interstitial can be skipped but should not have error
             return !result.error;
         }
     } catch (error: any) {
