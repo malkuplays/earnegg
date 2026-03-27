@@ -198,3 +198,45 @@
   color: var(--text-primary);
   border: 1px solid var(--glass-border);
 }
+.leaderboard-banner {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 16px;
+  background: linear-gradient(90deg, rgba(240, 201, 41, 0.1) 0%, rgba(240, 201, 41, 0.05) 100%);
+  border-left: 4px solid var(--accent-primary);
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+.lb-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(240, 201, 41, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(240, 201, 41, 0.2);
+}
+
+.lb-content {
+  flex: 1;
+}
+
+.lb-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.lb-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 2px 0 0 0;
+}
+
+.lb-arrow {
+  color: var(--text-dim);
+}

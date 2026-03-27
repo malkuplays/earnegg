@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRightLeft, CreditCard, Landmark, Clock, CheckCircle2 } from 'lucide-react';
+import { ArrowRightLeft, CreditCard, Landmark, Clock, CheckCircle2, Trophy, ChevronRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { supabase } from '../lib/supabase';
 import './Wallet.css';
@@ -118,6 +118,17 @@ export default function Wallet() {
         <div className="usd-equivalent">
           ~ ₹{MONEY_CONVERSION.toFixed(2)} INR
         </div>
+      </div>
+
+      <div className="leaderboard-banner glass-panel interactive-btn" onClick={() => navigate('/leaderboard')}>
+        <div className="lb-icon-wrapper">
+          < Trophy size={24} color="#f0c929" />
+        </div>
+        <div className="lb-content">
+          <h3 className="lb-title">Global Leaderboard</h3>
+          <p className="lb-subtitle">See your rank and top players</p>
+        </div>
+        <ChevronRight size={20} className="lb-arrow" />
       </div>
 
       <div className="withdraw-section">

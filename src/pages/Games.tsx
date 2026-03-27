@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Trophy, Disc, ChevronRight } from 'lucide-react';
+import { Disc, ChevronRight } from 'lucide-react';
 import FloatingAssets from '../components/FloatingAssets';
 import './Games.css';
 
@@ -15,14 +15,6 @@ export default function Games() {
       icon: Disc,
       color: '#f0c929',
       path: '/wheel'
-    },
-    {
-      id: 'leaderboard',
-      title: 'Leaderboard',
-      description: 'See the top players and your current rank.',
-      icon: Trophy,
-      color: '#4facfe',
-      path: '/leaderboard'
     }
   ];
 
