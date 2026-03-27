@@ -255,7 +255,7 @@ export default function EggCatcher() {
         {objects.map(obj => (
           <div 
             key={obj.id}
-            className={`game-object ${obj.type}`}
+            className={`game-object ${obj.type} ${obj.type === 'gold' ? 'egg' : ''}`}
             style={{ left: `${obj.x}%`, top: `${obj.y}%` }}
           >
             {obj.type === 'bomb' && <div className="bomb-fuse" />}
