@@ -20,9 +20,11 @@ const itemVariants: Variants = {
 };
 
 export default function Friends() {
-  const { user } = useApp();
+  const { user, referralBonusLevel } = useApp();
   const [copied, setCopied] = useState(false);
   const [friends, setFriends] = useState<any[]>([]);
+
+  const currentReward = 10000 + (referralBonusLevel - 1) * 1000;
 
   // Real invite link leveraging Telegram start param
   const inviteLink = user?.id 
@@ -65,7 +67,7 @@ export default function Friends() {
   };
 
   const handleShare = () => {
-    const text = 'Join me on Earnegg and we both get 5,000 coins instantly!';
+    const text = `Join me on Earnegg and we both get ${currentReward.toLocaleString()} coins instantly! 🥚✨`;
     const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`;
     const tgApp = (window as any).Telegram?.WebApp;
     if (tgApp?.openTelegramLink) {
@@ -79,9 +81,16 @@ export default function Friends() {
     <div className="page-container friends-page animate-fade-in">
       <div className="invite-hero glass-panel">
         <Gift size={48} className="text-accent gift-icon" />
-        <h2 className="h2">Invite Friends</h2>
-        <p className="body text-dim text-center">
-          Earn <span className="text-accent text-bold">5,000 coins</span> for you and your friend.
+        <h2 className="invite-title">Invite Friends</h2>
+        <div className="reward-badge">
+          <span className="reward-amount">+{currentReward.toLocaleString()}</span>
+          <span className="reward-unit">COINS PER INVITE</span>
+        </div>
+        <p className="invite-description">
+          Invite your friends and you both get rewarded instantly!
+          {referralBonusLevel > 1 && (
+            <span className="bonus-note"> (Includes +{((referralBonusLevel - 1) * 1000).toLocaleString()} Boost Bonus)</span>
+          )}
         </p>
         
         <div className="invite-link-box">
