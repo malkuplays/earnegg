@@ -9,18 +9,6 @@ import './Games.css';
 export default function Games() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Adsterra Popunder Script Integration
-    const scriptId = 'adsterra-popunder-script';
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = 'https://pl28993473.profitablecpmratenetwork.com/67/50/d8/6750d8a4468e9909853cf4c91a5d80f8.js';
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-
 
   return (
     <div className="page-container games-page animate-fade-in">
