@@ -29,9 +29,43 @@ export default function Tasks() {
   const [loadingTask, setLoadingTask] = useState<number | null>(null);
   const [adLoading, setAdLoading] = useState(false);
 
+  const [cooldowns, setCooldowns] = useState<Record<number, string>>({});
+  const COOLDOWN_HOURS = 6;
+
   useEffect(() => {
-    if (user?.id) fetchTasks();
-  }, [user]);
+    if (user?.id) {
+      fetchTasks();
+      const interval = setInterval(updateTimers, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [user, tasks.length]); // Re-run when tasks are loaded to initiate timers
+
+  const updateTimers = () => {
+    const newCooldowns: Record<number, string> = {};
+    let hasChanges = false;
+
+    tasks.forEach(task => {
+      if (task.last_completed_at) {
+        const lastTime = new Date(task.last_completed_at).getTime();
+        const now = new Date().getTime();
+        const diff = now - lastTime;
+        const cooldownMs = COOLDOWN_HOURS * 60 * 60 * 1000;
+
+        if (diff < cooldownMs) {
+          const remaining = cooldownMs - diff;
+          const hours = Math.floor(remaining / (1000 * 60 * 60));
+          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+          newCooldowns[task.id] = `${hours}h ${minutes}m ${seconds}s`;
+          hasChanges = true;
+        }
+      }
+    });
+
+    if (hasChanges || Object.keys(cooldowns).length > 0) {
+      setCooldowns(newCooldowns);
+    }
+  };
 
   const fetchTasks = async () => {
     // Fetch all available tasks
@@ -40,20 +74,35 @@ export default function Tasks() {
     // Fetch completed tasks for current user
     const { data: completed } = await supabase
       .from('player_tasks')
-      .select('task_id')
+      .select('task_id, completed_at')
       .eq('player_id', user.id.toString());
       
-    const completedIds = completed?.map((c: any) => c.task_id) || [];
-    
     if (allTasks) {
-      setTasks(allTasks.map(t => ({
-        ...t,
-        completed: completedIds.includes(t.id)
-      })));
+      setTasks(allTasks.map(t => {
+        // Find latest completion for this task
+        const taskCompletions = completed?.filter((c: any) => c.task_id === t.id) || [];
+        const latest = taskCompletions.length > 0 
+          ? taskCompletions.reduce((prev: any, current: any) => 
+              (new Date(current.completed_at) > new Date(prev.completed_at)) ? current : prev
+            )
+          : null;
+
+        const lastTime = latest ? new Date(latest.completed_at).getTime() : 0;
+        const now = new Date().getTime();
+        const isOnCooldown = latest && (now - lastTime < COOLDOWN_HOURS * 60 * 60 * 1000);
+
+        return {
+          ...t,
+          completed: isOnCooldown, // It's "done" only if it's currently on cooldown
+          last_completed_at: latest?.completed_at
+        };
+      }));
     }
   };
 
   const completeTask = async (taskId: number, action_url?: string) => {
+    if (cooldowns[taskId]) return; // Prevent click if on cooldown
+
     if (action_url) {
       // Use Telegram's native method to open links externally or in-app browser
       const tgApp = (window as any).Telegram?.WebApp;
@@ -180,7 +229,10 @@ export default function Tasks() {
 
             <div className="task-action">
               {task.completed ? (
-                <span className="caption text-success">Done</span>
+                <div className="cooldown-wrapper">
+                  <span className="caption text-dim">Cooldown</span>
+                  <span className="countdown-timer">{cooldowns[task.id] || 'Ready!'}</span>
+                </div>
               ) : (
                 <button 
                   className="go-btn" 
