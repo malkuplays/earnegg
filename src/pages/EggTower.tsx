@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Zap, Coins } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
-import FloatingAssets from '../components/FloatingAssets';
 import './EggTower.css';
 
 interface TowerLayer {
