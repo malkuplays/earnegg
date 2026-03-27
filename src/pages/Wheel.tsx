@@ -37,18 +37,21 @@ export default function Wheel() {
       const segmentAngle = 360 / wheelRewards.length;
       
       // Calculate final rotation
-      // 5 full circles (1800 deg) + offset for the reward index
-      // The cursor is at the top (0 deg), so we need to align the segment center to the top
-      // Reward index 0 is at 0-segmentAngle deg. 
-      // To bring it to top, we need to rotate by -(index * segmentAngle + segmentAngle/2)
-      const extraRotation = 360 * 5 + (360 - (rewardIndex * segmentAngle + segmentAngle / 2));
+      // 8 full circles (2880 deg) + offset for the reward index
+      const extraRotation = (360 * 8) + (360 - (rewardIndex * segmentAngle + segmentAngle / 2));
       const finalRotation = rotation + extraRotation;
       
       setRotation(finalRotation);
       setResult(data.reward);
 
-      // Wait for animation to finish (4s)
+      // Add periodic haptics to simulate ticker
+      const interval = setInterval(() => {
+        hapticFeedback('light');
+      }, 150);
+
+      // Wait for animation to finish (3s)
       setTimeout(() => {
+        clearInterval(interval);
         setSpinning(false);
         setShowReward(true);
         hapticFeedback('success');
@@ -59,7 +62,7 @@ export default function Wheel() {
              await showAd(adsBlockId, 'interstitial');
           }, 1500);
         }
-      }, 4000);
+      }, 3000);
     } else {
       setSpinning(false);
       alert(data.message || 'Error spinning wheel');
@@ -83,14 +86,13 @@ export default function Wheel() {
       </div>
 
       <div className="wheel-content">
-        <div className="wheel-outer">
+        <div className={`wheel-outer ${spinning ? 'is-spinning' : ''}`}>
           <div className="wheel-pointer">▼</div>
           <div 
             ref={wheelRef}
-            className="wheel-inner"
+            className={`wheel-inner ${spinning ? 'is-spinning' : ''}`}
             style={{ 
-              transform: `rotate(${rotation}deg)`,
-              transition: spinning ? 'transform 4s cubic-bezier(0.15, 0, 0.15, 1)' : 'none'
+              transform: `rotate(${rotation}deg)`
             }}
           >
             <svg viewBox="0 0 100 100" className="wheel-svg">
