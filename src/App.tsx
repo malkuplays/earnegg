@@ -77,14 +77,18 @@ function PopupTrigger() {
 }
 
 function MonetagInitializer() {
-  const { monetagInAppId } = useApp();
+  const { monetagInAppId, monetagInAppFrequency, monetagInAppInterval, monetagInAppTimeout } = useApp();
   
   useEffect(() => {
     if (monetagInAppId) {
       console.log('Initializing Monetag In-App Ads with Zone:', monetagInAppId);
-      MonetagService.initInApp(monetagInAppId);
+      MonetagService.initInApp(monetagInAppId, {
+        frequency: monetagInAppFrequency,
+        interval: monetagInAppInterval,
+        timeout: monetagInAppTimeout
+      });
     }
-  }, [monetagInAppId]);
+  }, [monetagInAppId, monetagInAppFrequency, monetagInAppInterval, monetagInAppTimeout]);
 
   return null;
 }

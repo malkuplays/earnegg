@@ -59,7 +59,7 @@ export class MonetagService {
     /**
      * Initialize In-App Interstitials (Auto)
      */
-    static initInApp(zoneId: string) {
+    static initInApp(zoneId: string, options?: { frequency?: number; interval?: number; timeout?: number }) {
         const method = this.getGlobalMethod(zoneId);
         if (!method) return;
         
@@ -68,10 +68,10 @@ export class MonetagService {
             method({
                 type: 'inApp',
                 inAppSettings: {
-                    frequency: 2,
+                    frequency: options?.frequency ?? 1,
                     capping: 0.1,
-                    interval: 30,
-                    timeout: 5,
+                    interval: options?.interval ?? 600,
+                    timeout: options?.timeout ?? 60,
                     everyPage: false
                 }
             });

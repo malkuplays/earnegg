@@ -45,6 +45,9 @@ interface AppContextType {
   monetagNativeId: string | null;
   monetagPopupId: string | null;
   monetagInAppId: string | null;
+  monetagInAppFrequency: number;
+  monetagInAppInterval: number;
+  monetagInAppTimeout: number;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -81,6 +84,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [monetagNativeId, setMonetagNativeId] = useState<string | null>(null);
   const [monetagPopupId, setMonetagPopupId] = useState<string | null>(null);
   const [monetagInAppId, setMonetagInAppId] = useState<string | null>(null);
+  const [monetagInAppFrequency, setMonetagInAppFrequency] = useState<number>(1);
+  const [monetagInAppInterval, setMonetagInAppInterval] = useState<number>(600);
+  const [monetagInAppTimeout, setMonetagInAppTimeout] = useState<number>(60);
 
   const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
@@ -192,6 +198,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       if (mNative) setMonetagNativeId(mNative);
       if (mPopup) setMonetagPopupId(mPopup);
       if (mInApp) setMonetagInAppId(mInApp);
+
+      const mInAppFreq = data.find(c => c.key === 'monetag_inapp_frequency')?.value;
+      const mInAppInt = data.find(c => c.key === 'monetag_inapp_interval')?.value;
+      const mInAppTime = data.find(c => c.key === 'monetag_inapp_timeout')?.value;
+
+      if (mInAppFreq) setMonetagInAppFrequency(parseInt(mInAppFreq));
+      if (mInAppInt) setMonetagInAppInterval(parseInt(mInAppInt));
+      if (mInAppTime) setMonetagInAppTimeout(parseInt(mInAppTime));
     }
   };
 
@@ -432,7 +446,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       monetagRewardedId,
       monetagNativeId,
       monetagPopupId,
-      monetagInAppId
+      monetagInAppId,
+      monetagInAppFrequency,
+      monetagInAppInterval,
+      monetagInAppTimeout
     }}>
       {children}
     </AppContext.Provider>
