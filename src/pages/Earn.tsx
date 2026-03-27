@@ -6,7 +6,6 @@ import { supabase } from '../lib/supabase';
 import { showAd } from '../lib/adsgram';
 import { Play, Zap } from 'lucide-react';
 import FloatingAssets from '../components/FloatingAssets';
-import OnlineStatus from '../components/OnlineStatus';
 import { MonetagNativeBanner } from '../components/MonetagAds';
 import './Earn.css';
 
@@ -141,7 +140,6 @@ export default function Earn() {
   return (
     <div className="page-container earn-page animate-fade-in">
       <FloatingAssets />
-      <OnlineStatus />
       
       <AnimatePresence>
         {showRewardPopup.show && (

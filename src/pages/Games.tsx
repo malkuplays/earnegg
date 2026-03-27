@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Disc } from 'lucide-react';
 import FloatingAssets from '../components/FloatingAssets';
+import OnlineStatus from '../components/OnlineStatus';
 import './Games.css';
 
 export default function Games() {
@@ -11,6 +12,7 @@ export default function Games() {
   return (
     <div className="page-container games-page animate-fade-in">
       <FloatingAssets />
+      <OnlineStatus />
       
       <div className="header-section">
         <h1 className="page-title">Game Hub</h1>
