@@ -55,7 +55,7 @@ export default function Boosts() {
       description: 'Auto-mines coins while you are offline (up to 12h)',
       icon: <Bot size={24} className="text-secondary" />,
       level: hasTapBot ? 'Active' : 0,
-      cost: hasTapBot ? 0 : 20000,
+      cost: hasTapBot ? 0 : 300000,
       maxLevel: 1 
     },
     {
