@@ -195,3 +195,20 @@
   font-size: 0.85rem;
   font-weight: 600;
 }
+
+.featured-card.secondary-featured {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+  min-height: auto;
+  padding: 24px;
+}
+
+.featured-badge.hot {
+  background: linear-gradient(135deg, #ff4d4d 0%, #cc0000 100%);
+  box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
+}
+
+.static-egg {
+  font-size: 80px;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+}

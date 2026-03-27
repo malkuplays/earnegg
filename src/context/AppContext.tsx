@@ -38,6 +38,7 @@ interface AppContextType {
   freeSpinsPerDay: number;
   wheelRewards: any[];
   spinWheel: () => Promise<any>;
+  completeEggCatcher: (score: number) => Promise<any>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -309,6 +310,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
     return data || { success: false, message: 'Unknown error' };
   };
 
+  const completeEggCatcher = async (score: number) => {
+    if (!user?.id) return { success: false, message: 'User not logged in' };
+    
+    const { data, error } = await supabase.rpc('complete_egg_catcher', { 
+      p_player_id: user.id.toString(),
+      p_score: score
+    });
+
+    if (error) {
+      console.error('RPC complete_egg_catcher error:', error);
+      return { success: false, message: error.message };
+    }
+
+    if (data && data.success) {
+      setBalance(data.new_balance);
+      setEnergy(data.new_energy);
+      return data;
+    }
+
+    return data || { success: false, message: 'Unknown error' };
+  };
+
   return (
     <AppContext.Provider value={{ 
       balance, 
@@ -344,7 +367,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       spinsToday,
       freeSpinsPerDay,
       wheelRewards,
-      spinWheel
+      spinWheel,
+      completeEggCatcher
     }}>
       {children}
     </AppContext.Provider>

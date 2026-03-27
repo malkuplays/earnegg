@@ -45,6 +45,27 @@ export default function Games() {
           </div>
           <div className="pulse-overlay"></div>
         </motion.div>
+
+        <motion.div
+          className="featured-card glass-panel secondary-featured"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => navigate('/egg-catcher')}
+          style={{ marginTop: '20px' }}
+        >
+          <div className="featured-content">
+            <div className="featured-info">
+              <h2 className="featured-title">Egg Catcher</h2>
+              <p className="featured-desc">Catch the eggs, earn rewards! Costs 500 energy.</p>
+              <div className="featured-badge hot">HOT!</div>
+            </div>
+            <div className="featured-visual static-egg">
+              🥚
+            </div>
+          </div>
+        </motion.div>
       </div>
 
       <div className="coming-soon-section">
