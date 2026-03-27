@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, PointerEvent } from 'react';
+import { useState, useRef, useCallback, useEffect, type PointerEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
