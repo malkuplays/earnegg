@@ -20,14 +20,18 @@ export default function EggCatcher() {
   const navigate = useNavigate();
   
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameover'>('start');
+  const [countdown, setCountdown] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   const [basketX, setBasketX] = useState(50); // percentage
   const [objects, setObjects] = useState<GameObject[]>([]);
+  const [popups, setPopups] = useState<{id: number, x: number, y: number, text: string}[]>([]);
+  const [isShaking, setIsShaking] = useState(false);
   const [coinsEarned, setCoinsEarned] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const gameLoopRef = useRef<number | null>(null);
+  const gameStateRef = useRef<'start' | 'playing' | 'gameover'>('start');
   const lastSpawnRef = useRef<number>(0);
   const objectsRef = useRef<GameObject[]>([]);
   const basketXRef = useRef<number>(50);
@@ -40,43 +44,60 @@ export default function EggCatcher() {
     const type = types[Math.floor(Math.random() * types.length)];
     const newObj: GameObject = {
       id: Date.now() + Math.random(),
-      x: Math.random() * 90 + 5, // 5% to 95%
+      x: Math.random() * 80 + 10, // 10% to 90%
       y: -10,
       type,
-      speed: 1.5 + (scoreRef.current / 1000) // Increase speed with score
+      speed: 1.2 + (scoreRef.current / 1500) // Slightly slower start, scales better
     };
     objectsRef.current = [...objectsRef.current, newObj];
     setObjects([...objectsRef.current]);
   }, []);
 
-  const updateGame = useCallback((time: number) => {
-    if (gameState !== 'playing') return;
+  const addPopup = (x: number, y: number, text: string) => {
+    const id = Date.now() + Math.random();
+    setPopups(prev => [...prev, { id, x, y, text }]);
+    setTimeout(() => {
+      setPopups(prev => prev.filter(p => p.id !== id));
+    }, 800);
+  };
 
-    // Respawn every 800ms to 1200ms
-    if (time - lastSpawnRef.current > 1000 - Math.min(scoreRef.current / 2, 400)) {
+  const triggerShake = () => {
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 300);
+  };
+
+  const updateGame = useCallback((time: number) => {
+    if (gameStateRef.current !== 'playing') return;
+
+    // Respawn logic
+    if (time - lastSpawnRef.current > 1100 - Math.min(scoreRef.current / 3, 500)) {
       spawnObject();
       lastSpawnRef.current = time;
     }
 
     const nextObjects: GameObject[] = [];
-    const basketWidth = 25; // Approximate width in percentage
+    const basketWidth = 25; 
+    const basketYTrigger = 75; // Matches new basket position
 
     objectsRef.current.forEach(obj => {
       const nextY = obj.y + obj.speed;
 
-      // Collision detection
-      if (nextY >= 82 && nextY <= 88) {
+      // Collision detection with new basket position
+      if (nextY >= basketYTrigger && nextY <= basketYTrigger + 5) {
         const dist = Math.abs(obj.x - basketXRef.current);
         if (dist < basketWidth / 2) {
           // Caught!
           if (obj.type === 'egg') {
             scoreRef.current += 10;
+            addPopup(obj.x, obj.y, '+10');
             hapticFeedback('light');
           } else if (obj.type === 'gold') {
             scoreRef.current += 50;
+            addPopup(obj.x, obj.y, '+50');
             hapticFeedback('medium');
           } else if (obj.type === 'bomb') {
             livesRef.current -= 1;
+            triggerShake();
             hapticFeedback('error');
             if (livesRef.current <= 0) {
               endGame();
@@ -84,15 +105,12 @@ export default function EggCatcher() {
           }
           setScore(scoreRef.current);
           setLives(livesRef.current);
-          return; // Don't add to nextObjects (remove from game)
+          return; 
         }
       }
 
       if (nextY > 100) {
-        // Missed
-        if (obj.type !== 'bomb') {
-             // Optional: penalty for missing eggs?
-        }
+        // Missed - could add penalty here if desired
       } else {
         nextObjects.push({ ...obj, y: nextY });
       }
@@ -101,26 +119,53 @@ export default function EggCatcher() {
     objectsRef.current = nextObjects;
     setObjects(nextObjects);
     gameLoopRef.current = requestAnimationFrame(updateGame);
-  }, [gameState, spawnObject]);
+  }, [spawnObject]);
 
   const startGame = () => {
     if (energy < 500) {
       alert('Not enough energy! You need at least 500 energy to play.');
       return;
     }
+    
+    // Reset stats
     setScore(0);
     setLives(3);
     setObjects([]);
+    setPopups([]);
     scoreRef.current = 0;
     livesRef.current = 3;
     objectsRef.current = [];
+    
+    // Start countdown
     setGameState('playing');
-    lastSpawnRef.current = performance.now();
-    gameLoopRef.current = requestAnimationFrame(updateGame);
+    gameStateRef.current = 'start'; // Keep internal state 'start' until countdown finishes
+    setCountdown(3);
     hapticFeedback('medium');
   };
 
+  useEffect(() => {
+    if (countdown === null) return;
+    
+    if (countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+        hapticFeedback('light');
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      // Countdown finished
+      const timer = setTimeout(() => {
+        setCountdown(null);
+        gameStateRef.current = 'playing';
+        lastSpawnRef.current = performance.now();
+        gameLoopRef.current = requestAnimationFrame(updateGame);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown, updateGame]);
+
   const endGame = async () => {
+    gameStateRef.current = 'gameover';
     setGameState('gameover');
     if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     
@@ -133,7 +178,7 @@ export default function EggCatcher() {
   };
 
   const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (gameState !== 'playing' || !containerRef.current) return;
+    if (gameStateRef.current !== 'playing' || !containerRef.current) return;
     
     const rect = containerRef.current.getBoundingClientRect();
     let clientX;
@@ -145,7 +190,7 @@ export default function EggCatcher() {
     }
 
     const x = ((clientX - rect.left) / rect.width) * 100;
-    const boundedX = Math.max(10, Math.min(90, x));
+    const boundedX = Math.max(12, Math.min(88, x));
     setBasketX(boundedX);
     basketXRef.current = boundedX;
   };
@@ -162,7 +207,7 @@ export default function EggCatcher() {
       
       <div 
         ref={containerRef}
-        className="game-canvas-container"
+        className={`game-canvas-container ${isShaking ? 'shake' : ''}`}
         onMouseMove={handleMouseMove}
         onTouchMove={handleMouseMove}
       >
@@ -199,7 +244,21 @@ export default function EggCatcher() {
             key={obj.id}
             className={`game-object ${obj.type}`}
             style={{ left: `${obj.x}%`, top: `${obj.y}%` }}
-          />
+          >
+            {obj.type === 'bomb' && <div className="bomb-fuse" />}
+          </div>
+        ))}
+
+        {popups.map(popup => (
+          <motion.div
+            key={popup.id}
+            className="score-popup"
+            initial={{ opacity: 1, y: 0, scale: 0.5 }}
+            animate={{ opacity: 0, y: -100, scale: 1.5 }}
+            style={{ left: `${popup.x}%`, top: `${popup.y}%` }}
+          >
+            {popup.text}
+          </motion.div>
         ))}
 
         <div 
@@ -208,6 +267,18 @@ export default function EggCatcher() {
         />
 
         <AnimatePresence>
+          {countdown !== null && (
+            <motion.div 
+              className="countdown-overlay"
+              initial={{ opacity: 0, scale: 2 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              key={countdown}
+            >
+              <span className="countdown-number">{countdown === 0 ? 'GO!' : countdown}</span>
+            </motion.div>
+          )}
+
           {gameState === 'start' && (
             <motion.div 
               className="start-overlay"

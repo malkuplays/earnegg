@@ -45,39 +45,47 @@ export default function Games() {
           </div>
           <div className="pulse-overlay"></div>
         </motion.div>
-
-        <motion.div
-          className="featured-card glass-panel secondary-featured"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => navigate('/egg-catcher')}
-          style={{ marginTop: '20px' }}
-        >
-          <div className="featured-content">
-            <div className="featured-info">
-              <h2 className="featured-title">Egg Catcher</h2>
-              <p className="featured-desc">Catch the eggs, earn rewards! Costs 500 energy.</p>
-              <div className="featured-badge hot">HOT!</div>
-            </div>
-            <div className="featured-visual static-egg">
-              🥚
-            </div>
-          </div>
-        </motion.div>
       </div>
 
-      <div className="coming-soon-section">
-        <div className="coming-soon-badge">Coming Soon</div>
-        <div className="coming-soon-games">
-          <div className="placeholder-game glass-panel">
-            <div className="placeholder-icon">🥚</div>
-            <span>Egg Match-3</span>
+      <div className="mini-games-section">
+        <div className="section-header">
+          <span className="section-label">Mini Games</span>
+        </div>
+        
+        <div className="games-grid-3">
+          <motion.div 
+            className="grid-game-item glass-panel"
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/egg-catcher')}
+          >
+            <div className="game-icon">🥚</div>
+            <span className="game-name">Egg Catcher</span>
+            <div className="hot-indicator">HOT</div>
+          </motion.div>
+
+          <div className="grid-game-item glass-panel locked">
+            <div className="game-icon">🧩</div>
+            <span className="game-name">Egg Match</span>
           </div>
-          <div className="placeholder-game glass-panel">
-            <div className="placeholder-icon">🚀</div>
-            <span>Space Egg</span>
+
+          <div className="grid-game-item glass-panel locked">
+            <div className="game-icon">🚀</div>
+            <span className="game-name">Space Egg</span>
+          </div>
+
+          <div className="grid-game-item glass-panel locked">
+            <div className="game-icon">🃏</div>
+            <span className="game-name">Egg Cards</span>
+          </div>
+
+          <div className="grid-game-item glass-panel locked">
+            <div className="game-icon">📉</div>
+            <span className="game-name">Egg Crash</span>
+          </div>
+
+          <div className="grid-game-item glass-panel locked">
+            <div className="game-icon">⛏️</div>
+            <span className="game-name">Egg Miner</span>
           </div>
         </div>
       </div>

@@ -145,70 +145,78 @@
   }
 }
 
-.games-grid {
+.mini-games-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.coming-soon-section {
   margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 }
 
-.coming-soon-badge {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--accent-primary);
-  background: var(--accent-primary-dim);
-  padding: 4px 12px;
-  border-radius: 20px;
-  align-self: flex-start;
-}
-
-.coming-soon-games {
+.games-grid-3 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 
-.placeholder-game {
+.grid-game-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 24px 16px;
+  justify-content: center;
+  padding: 16px 8px;
   border-radius: 20px;
+  gap: 8px;
+  position: relative;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.grid-game-item:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.game-icon {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.game-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.grid-game-item.locked {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+.grid-game-item.locked::after {
+  content: '🔒';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 0.7rem;
   opacity: 0.6;
-  filter: grayscale(0.5);
 }
 
-.placeholder-icon {
-  font-size: 2rem;
-}
-
-.placeholder-game span {
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.featured-card.secondary-featured {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border-color: rgba(255, 255, 255, 0.1);
-  min-height: auto;
-  padding: 24px;
-}
-
-.featured-badge.hot {
+.hot-indicator {
+  position: absolute;
+  top: -6px;
+  right: -4px;
   background: linear-gradient(135deg, #ff4d4d 0%, #cc0000 100%);
-  box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
-}
-
-.static-egg {
-  font-size: 80px;
-  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(255, 77, 77, 0.4);
+  z-index: 3;
 }
