@@ -63,10 +63,15 @@ export default function Games() {
             <div className="hot-indicator">HOT</div>
           </motion.div>
 
-          <div className="grid-game-item glass-panel locked">
-            <div className="game-icon">🧩</div>
-            <span className="game-name">Egg Match</span>
-          </div>
+          <motion.div 
+            className="grid-game-item glass-panel"
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/egg-tower')}
+          >
+            <div className="game-icon">🏗️</div>
+            <span className="game-name">Egg Tower</span>
+            <div className="hot-indicator">NEW</div>
+          </motion.div>
 
           <div className="grid-game-item glass-panel locked">
             <div className="game-icon">🚀</div>

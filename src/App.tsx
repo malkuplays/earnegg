@@ -15,6 +15,7 @@ import Leaderboard from './pages/Leaderboard';
 import Games from './pages/Games';
 import Wheel from './pages/Wheel';
 import EggCatcher from './pages/EggCatcher';
+import EggTower from './pages/EggTower';
 
 // Components
 import BottomNav from './components/BottomNav';
@@ -38,6 +39,7 @@ function AppRoutes() {
         <Route path="/games" element={<PageTransition><Games /></PageTransition>} />
         <Route path="/wheel" element={<PageTransition><Wheel /></PageTransition>} />
         <Route path="/egg-catcher" element={<PageTransition><EggCatcher /></PageTransition>} />
+        <Route path="/egg-tower" element={<PageTransition><EggTower /></PageTransition>} />
         <Route path="/friends" element={<PageTransition><Friends /></PageTransition>} />
         <Route path="/wallet" element={<PageTransition><Wallet /></PageTransition>} />
         <Route path="/legal" element={<PageTransition><Legal /></PageTransition>} />
