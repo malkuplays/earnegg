@@ -118,15 +118,17 @@ export default function Tasks() {
         initial="hidden"
         animate="show"
       >
-        {/* AdsGram Task Ad */}
-        {taskBlockId && (
+        {/* AdsGram Task Ads (3 slots) */}
+        {taskBlockId && [1, 2, 3].map((idx) => (
           taskBlockId.startsWith('task-') ? (
             <AdsGramTask 
+              key={`ad-task-${idx}`}
               blockId={taskBlockId} 
               className="task-card glass-panel ad-task" 
             />
           ) : (
             <motion.div 
+              key={`ad-video-${idx}`}
               variants={itemVariants}
               className="task-card glass-panel ad-task"
             >
@@ -134,7 +136,7 @@ export default function Tasks() {
                 <Play className="text-accent" size={24} fill="currentColor" />
               </div>
               <div className="task-info">
-                <h3 className="h3">Sponsored Video</h3>
+                <h3 className="h3">Sponsored Video {idx}</h3>
                 <div className="task-reward">
                   <span className="coin-mini">💰</span>
                   <span className="reward-amount">+{taskAmount.toLocaleString()}</span>
@@ -151,7 +153,7 @@ export default function Tasks() {
               </div>
             </motion.div>
           )
-        )}
+        ))}
 
         {tasks.map(task => (
           <motion.div 
