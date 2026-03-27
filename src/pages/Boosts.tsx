@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { Zap, Battery, Timer, Bot, ChevronRight, UserPlus, Gift, Cpu } from 'lucide-react';
 import { motion } from 'framer-motion';
 import AdsterraBanner from '../components/AdsterraBanner';
+import AdsterraNative from '../components/AdsterraNative';
 import './Boosts.css';
 
 export default function Boosts() {
@@ -165,6 +166,8 @@ export default function Boosts() {
           );
         })}
       </div>
+
+      <AdsterraNative />
     </div>
   );
 }
