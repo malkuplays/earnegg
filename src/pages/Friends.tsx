@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { useApp } from '../context/AppContext';
+import AdsterraNative from '../components/AdsterraNative';
 import './Friends.css';
 
 const containerVariants: Variants = {
@@ -131,6 +132,8 @@ export default function Friends() {
           )}
         </motion.div>
       </div>
+
+      <AdsterraNative />
     </div>
   );
 }
