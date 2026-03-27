@@ -1,5 +1,5 @@
 import './Tasks.css';
-import { CheckCircle2, ChevronRight, Play } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Play, Clock } from 'lucide-react';
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -53,10 +53,8 @@ export default function Tasks() {
 
         if (diff < cooldownMs) {
           const remaining = cooldownMs - diff;
-          const hours = Math.floor(remaining / (1000 * 60 * 60));
-          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-          newCooldowns[task.id] = `${hours}h ${minutes}m ${seconds}s`;
+          const hours = Math.ceil(remaining / (1000 * 60 * 60));
+          newCooldowns[task.id] = `Ready in ${hours}h`;
           hasChanges = true;
         }
       }
@@ -229,9 +227,9 @@ export default function Tasks() {
 
             <div className="task-action">
               {task.completed ? (
-                <div className="cooldown-wrapper">
-                  <span className="caption text-dim">Cooldown</span>
-                  <span className="countdown-timer">{cooldowns[task.id] || 'Ready!'}</span>
+                <div className="cooldown-badge">
+                  <Clock size={12} className="text-dim" />
+                  <span className="cooldown-text">{cooldowns[task.id] || 'Soon'}</span>
                 </div>
               ) : (
                 <button 
