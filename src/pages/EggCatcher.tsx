@@ -114,6 +114,10 @@ export default function EggCatcher() {
           scoreRef.current = Math.max(0, scoreRef.current - 10);
           addPopup(obj.x, 90, '-10');
           hapticFeedback('warning');
+        } else if (obj.type === 'gold') {
+          scoreRef.current = Math.max(0, scoreRef.current - 100);
+          addPopup(obj.x, 90, '-100');
+          hapticFeedback('error');
         }
       } else {
         nextObjects.push({ ...obj, y: nextY });
