@@ -1,22 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Disc, ChevronRight } from 'lucide-react';
+import { Disc } from 'lucide-react';
 import FloatingAssets from '../components/FloatingAssets';
 import './Games.css';
 
 export default function Games() {
   const navigate = useNavigate();
 
-  const gameCards = [
-    {
-      id: 'wheel',
-      title: 'Wheel of Fortune',
-      description: 'Spin daily to win coins, energy, and more!',
-      icon: Disc,
-      color: '#f0c929',
-      path: '/wheel'
-    }
-  ];
 
   return (
     <div className="page-container games-page animate-fade-in">
@@ -24,33 +14,37 @@ export default function Games() {
       
       <div className="header-section">
         <h1 className="page-title">Game Hub</h1>
-        <p className="page-subtitle">Play games, climb the ranks, and earn rewards!</p>
+        <p className="page-subtitle">Play and earn rewards!</p>
       </div>
 
-      <div className="games-grid">
-        {gameCards.map((game, index) => {
-          const Icon = game.icon;
-          return (
-            <motion.div
-              key={game.id}
-              className="game-card glass-panel"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => navigate(game.path)}
-              whileTap={{ scale: 0.98 }}
+      <div className="featured-section">
+        <div className="section-header">
+          <span className="section-label">Featured Game</span>
+        </div>
+        
+        <motion.div
+          className="featured-card glass-panel"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => navigate('/wheel')}
+        >
+          <div className="featured-content">
+            <div className="featured-info">
+              <h2 className="featured-title">Wheel of Fortune</h2>
+              <p className="featured-desc">Spin daily to win coins, energy, and exclusive bonuses!</p>
+              <div className="featured-badge">Available Now</div>
+            </div>
+            <motion.div 
+              className="featured-visual"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
-              <div className="game-card-icon" style={{ backgroundColor: `${game.color}20`, color: game.color }}>
-                <Icon size={32} />
-              </div>
-              <div className="game-card-content">
-                <h3 className="game-card-title">{game.title}</h3>
-                <p className="game-card-description">{game.description}</p>
-              </div>
-              <ChevronRight className="game-card-arrow" size={20} />
+              <Disc size={120} className="floating-wheel-icon" />
             </motion.div>
-          );
-        })}
+          </div>
+          <div className="pulse-overlay"></div>
+        </motion.div>
       </div>
 
       <div className="coming-soon-section">
