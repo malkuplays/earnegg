@@ -48,6 +48,7 @@ interface AppContextType {
   monetagInAppFrequency: number;
   monetagInAppInterval: number;
   monetagInAppTimeout: number;
+  onlineCount: number;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -87,6 +88,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [monetagInAppFrequency, setMonetagInAppFrequency] = useState<number>(1);
   const [monetagInAppInterval, setMonetagInAppInterval] = useState<number>(600);
   const [monetagInAppTimeout, setMonetagInAppTimeout] = useState<number>(60);
+  const [onlineCount, setOnlineCount] = useState<number>(0);
+  const [onlineMin, setOnlineMin] = useState<number>(850);
+  const [onlineMax, setOnlineMax] = useState<number>(1240);
 
   const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
@@ -206,6 +210,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       if (mInAppFreq) setMonetagInAppFrequency(parseInt(mInAppFreq));
       if (mInAppInt) setMonetagInAppInterval(parseInt(mInAppInt));
       if (mInAppTime) setMonetagInAppTimeout(parseInt(mInAppTime));
+
+      const fakeMin = data.find(c => c.key === 'fake_online_min')?.value;
+      const fakeMax = data.find(c => c.key === 'fake_online_max')?.value;
+      if (fakeMin) setOnlineMin(parseInt(fakeMin));
+      if (fakeMax) setOnlineMax(parseInt(fakeMax));
     }
   };
 
@@ -221,6 +230,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
     
     return () => clearInterval(interval);
   }, [maxEnergy, rechargeSpeedLevel]);
+
+  // Fake Online Counter Jitter
+  useEffect(() => {
+    // Initial random value
+    const initial = Math.floor(Math.random() * (onlineMax - onlineMin + 1)) + onlineMin;
+    setOnlineCount(initial);
+
+    const interval = setInterval(() => {
+      setOnlineCount(prev => {
+        const jitter = Math.floor(Math.random() * 7) - 3; // -3 to +3
+        let next = prev + jitter;
+        if (next < onlineMin) next = onlineMin + Math.floor(Math.random() * 5);
+        if (next > onlineMax) next = onlineMax - Math.floor(Math.random() * 5);
+        return next;
+      });
+    }, 5000); // Update every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [onlineMin, onlineMax]);
 
   const refreshStats = async () => {
     if (!user) return;
@@ -449,7 +477,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       monetagInAppId,
       monetagInAppFrequency,
       monetagInAppInterval,
-      monetagInAppTimeout
+      monetagInAppTimeout,
+      onlineCount
     }}>
       {children}
     </AppContext.Provider>
