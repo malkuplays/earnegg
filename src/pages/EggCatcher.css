@@ -133,6 +133,7 @@
   z-index: 50;
   transform: translateX(-50%);
   transition: transform 0.08s ease-out;
+  will-change: transform;
 }
 
 .game-basket::before {
@@ -162,9 +163,10 @@
   position: absolute;
   width: 42px;
   height: 50px;
-  transform: translateX(-50%);
+  transform: translate3d(-50%, 0, 0);
   z-index: 40;
   filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+  will-change: transform;
 }
 
 .game-object.egg {
@@ -175,8 +177,8 @@
 }
 
 @keyframes egg-bob {
-  0%, 100% { transform: translateX(-50%) rotate(-5deg); }
-  50% { transform: translateX(-50%) rotate(5deg); }
+  0%, 100% { transform: translate3d(-50%, 0, 0) rotate(-5deg); }
+  50% { transform: translate3d(-50%, 0, 0) rotate(5deg); }
 }
 
 .game-object.egg.gold {

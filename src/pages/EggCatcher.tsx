@@ -16,6 +16,13 @@ interface GameObject {
   speed: number;
 }
 
+interface Popup {
+  id: number;
+  x: number;
+  y: number;
+  text: string;
+}
+
 export default function EggCatcher() {
   const { energy, completeEggCatcher, interstitialBlockId } = useApp();
   const navigate = useNavigate();
@@ -26,7 +33,7 @@ export default function EggCatcher() {
   const [lives, setLives] = useState(3);
   const [basketX, setBasketX] = useState(50); // percentage
   const [objects, setObjects] = useState<GameObject[]>([]);
-  const [popups, setPopups] = useState<{id: number, x: number, y: number, text: string}[]>([]);
+  const [popups, setPopups] = useState<Popup[]>([]);
   const [isShaking, setIsShaking] = useState(false);
   const [coinsEarned, setCoinsEarned] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -39,6 +46,8 @@ export default function EggCatcher() {
   const scoreRef = useRef<number>(0);
   const livesRef = useRef<number>(3);
   const containerRef = useRef<HTMLDivElement>(null);
+  const basketRef = useRef(50); // Ref for basket position
+  const containerSizeRef = useRef({ width: 0, left: 0 }); // Ref for container dimensions
 
   const spawnObject = useCallback(() => {
     const types: ('egg' | 'gold' | 'bomb')[] = ['egg', 'egg', 'gold', 'gold', 'gold', 'gold', 'bomb', 'bomb'];
@@ -184,7 +193,7 @@ export default function EggCatcher() {
     if (gameStateRef.current === 'gameover') return;
     gameStateRef.current = 'gameover';
     setGameState('gameover');
-    setScore(scoreRef.current); // Ensure final score is set
+    setScore(scoreRef.current);
     
     if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     
@@ -194,7 +203,6 @@ export default function EggCatcher() {
       if (result && result.success) {
         setCoinsEarned(result.coins_earned);
       } else {
-        // Fallback to score if RPC fails or is slow
         setCoinsEarned(scoreRef.current);
       }
     } catch (err) {
@@ -205,7 +213,6 @@ export default function EggCatcher() {
   };
 
   const handlePlayAgain = async () => {
-    // Show Ad if block ID is available
     if (interstitialBlockId) {
       setLoading(true);
       await showAd(interstitialBlockId, 'interstitial');
@@ -215,19 +222,22 @@ export default function EggCatcher() {
   };
 
   const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (gameStateRef.current !== 'playing' || !containerRef.current) return;
+    if (gameStateRef.current !== 'playing' || countdown !== null) return;
     
-    const rect = containerRef.current.getBoundingClientRect();
-    let clientX;
-    
-    if ('touches' in e) {
-      clientX = e.touches[0].clientX;
-    } else {
-      clientX = e.clientX;
+    // Update container size if not yet cached
+    if (containerSizeRef.current.width === 0 && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      containerSizeRef.current = { width: rect.width, left: rect.left };
     }
 
-    const x = ((clientX - rect.left) / rect.width) * 100;
+    const { width, left } = containerSizeRef.current;
+    if (width === 0) return;
+
+    const clientX = 'touches' in e ? (e as React.TouchEvent).touches[0].clientX : (e as React.MouseEvent).clientX;
+    const x = ((clientX - left) / width) * 100;
     const boundedX = Math.max(12, Math.min(88, x));
+    
+    basketRef.current = boundedX;
     setBasketX(boundedX);
     basketXRef.current = boundedX;
   };
@@ -280,7 +290,11 @@ export default function EggCatcher() {
           <div 
             key={obj.id}
             className={`game-object ${obj.type} ${obj.type === 'gold' ? 'egg' : ''}`}
-            style={{ left: `${obj.x}%`, top: `${obj.y}%` }}
+            style={{ 
+              left: `${obj.x}%`, 
+              top: `${obj.y}%`,
+              transform: 'translate3d(-50%, 0, 0)' // Hardware acceleration
+            }}
           >
             {obj.type === 'bomb' && <div className="bomb-fuse" />}
           </div>
