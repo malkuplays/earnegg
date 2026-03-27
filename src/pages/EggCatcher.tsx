@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Zap, Heart } from 'lucide-react';
+import { ArrowLeft, Zap, Heart, Coins } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
+import { showAd } from '../lib/adsgram';
 import FloatingAssets from '../components/FloatingAssets';
 import './EggCatcher.css';
 
@@ -16,7 +17,7 @@ interface GameObject {
 }
 
 export default function EggCatcher() {
-  const { energy, completeEggCatcher } = useApp();
+  const { energy, completeEggCatcher, interstitialBlockId } = useApp();
   const navigate = useNavigate();
   
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameover'>('start');
@@ -40,7 +41,7 @@ export default function EggCatcher() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const spawnObject = useCallback(() => {
-    const types: ('egg' | 'gold' | 'bomb')[] = ['egg', 'egg', 'egg', 'egg', 'gold', 'bomb', 'bomb'];
+    const types: ('egg' | 'gold' | 'bomb')[] = ['egg', 'egg', 'egg', 'gold', 'gold', 'bomb', 'bomb'];
     const type = types[Math.floor(Math.random() * types.length)];
     const newObj: GameObject = {
       id: Date.now() + Math.random(),
@@ -192,6 +193,16 @@ export default function EggCatcher() {
       setCoinsEarned(scoreRef.current);
     }
     setLoading(false);
+  };
+
+  const handlePlayAgain = async () => {
+    // Show Ad if block ID is available
+    if (interstitialBlockId) {
+      setLoading(true);
+      await showAd(interstitialBlockId, 'interstitial');
+      setLoading(false);
+    }
+    startGame();
   };
 
   const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
@@ -371,10 +382,10 @@ export default function EggCatcher() {
                     <div className="reward-glow" />
                     <div className="reward-content">
                       <div className="reward-icon-wrapper">
-                        <img src="/coin.png" alt="coin" className="reward-coin-img" onError={(e) => e.currentTarget.src = 'https://cryptologos.cc/logos/tether-usdt-logo.svg'} />
+                        <Coins size={32} className="reward-coin-icon" />
                       </div>
                       <div className="reward-info">
-                        <span className="reward-label">TOTAL EARNED</span>
+                        <span className="reward-label">COINS EARNED</span>
                         <span className="reward-amount">
                           {loading ? '...' : `+${coinsEarned || score}`}
                         </span>
@@ -384,7 +395,7 @@ export default function EggCatcher() {
                 </div>
 
                 <div className="game-over-actions">
-                  <button className="restart-btn-v2" onClick={startGame} disabled={loading}>
+                  <button className="restart-btn-v2" onClick={handlePlayAgain} disabled={loading}>
                     < Zap size={20} fill="currentColor" />
                     PLAY AGAIN
                   </button>

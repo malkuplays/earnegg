@@ -411,18 +411,18 @@
 .reward-icon-wrapper {
   width: 64px;
   height: 64px;
-  background: #f0c929;
+  background: rgba(240, 201, 41, 0.15);
+  border: 1px solid rgba(240, 201, 41, 0.3);
   border-radius: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 20px rgba(240, 201, 41, 0.4);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
-.reward-coin-img {
-  width: 38px;
-  height: 38px;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+.reward-coin-icon {
+  color: var(--accent-primary);
+  filter: drop-shadow(0 0 10px rgba(240, 201, 41, 0.6));
 }
 
 .reward-info {
