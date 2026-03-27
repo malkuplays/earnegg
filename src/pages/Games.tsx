@@ -33,7 +33,7 @@ export default function Games() {
             <div className="featured-info">
               <h2 className="featured-title">Wheel of Fortune</h2>
               <p className="featured-desc">Spin daily to win coins, energy, and exclusive bonuses!</p>
-              <div className="featured-badge">Available Now</div>
+              <div className="featured-badge">Play Now</div>
             </div>
             <motion.div 
               className="featured-visual"
