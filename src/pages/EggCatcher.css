@@ -247,7 +247,7 @@
   font-style: italic;
 }
 
-.start-overlay, .game-over-overlay {
+.start-overlay {
   position: absolute;
   inset: 0;
   background: rgba(13, 15, 20, 0.9);
@@ -259,6 +259,18 @@
   z-index: 200;
   padding: 40px;
   text-align: center;
+}
+
+.game-over-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(25px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 20px;
 }
 
 .game-title {
@@ -315,40 +327,166 @@
   transform: translateY(0) scale(0.95);
 }
 
-.game-summary {
+.game-over-card {
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 40px;
+  padding: 45px 30px;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05);
+  position: relative;
+}
+
+.game-over-title {
+  font-size: 2.8rem;
+  font-weight: 950;
+  color: #fff;
+  margin-bottom: 35px;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+}
+
+.game-over-stats {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  width: 100%;
-  max-width: 300px;
-  margin-bottom: 40px;
+  gap: 35px;
+  margin-bottom: 45px;
 }
 
-.summary-item {
+.stat-group {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-direction: column;
+  gap: 8px;
 }
 
-.summary-label {
+.stat-label {
+  font-size: 0.8rem;
+  font-weight: 800;
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  font-weight: 500;
+  letter-spacing: 3px;
+  opacity: 0.7;
 }
 
-.summary-value {
-  font-size: 1.4rem;
-  font-weight: 900;
+.stat-value {
+  font-size: 4rem;
+  font-weight: 950;
   color: #fff;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
 }
 
-.summary-value.highlight {
+.reward-section {
+  position: relative;
+  background: linear-gradient(135deg, rgba(240, 201, 41, 0.15), rgba(240, 201, 41, 0.05));
+  border: 1px solid rgba(240, 201, 41, 0.25);
+  border-radius: 28px;
+  padding: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.reward-glow {
+  position: absolute;
+  inset: -50%;
+  background: radial-gradient(circle at center, rgba(240, 201, 41, 0.3), transparent 60%);
+  animation: reward-pulse 3s infinite alternate;
+}
+
+@keyframes reward-pulse {
+  from { opacity: 0.3; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1.2); }
+}
+
+.reward-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.reward-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  background: #f0c929;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(240, 201, 41, 0.4);
+}
+
+.reward-coin-img {
+  width: 38px;
+  height: 38px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.reward-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.reward-label {
+  font-size: 0.75rem;
+  font-weight: 800;
   color: var(--accent-primary);
-  text-shadow: 0 0 10px rgba(240, 201, 41, 0.3);
+  letter-spacing: 1.5px;
+}
+
+.reward-amount {
+  font-size: 2.2rem;
+  font-weight: 950;
+  color: #fff;
+  line-height: 1;
+}
+
+.game-over-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.restart-btn-v2 {
+  background: linear-gradient(180deg, #f0c929 0%, #d4a017 100%);
+  color: #000;
+  border: none;
+  padding: 20px;
+  border-radius: 22px;
+  font-size: 1.2rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 15px 30px rgba(240, 201, 41, 0.4);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.restart-btn-v2:active {
+  transform: scale(0.96);
+  box-shadow: 0 5px 15px rgba(240, 201, 41, 0.2);
+}
+
+.hub-btn-v2 {
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 18px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hub-btn-v2:active {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .game-legend {

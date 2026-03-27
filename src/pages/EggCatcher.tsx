@@ -100,11 +100,9 @@ export default function EggCatcher() {
             triggerShake();
             hapticFeedback('error');
             if (livesRef.current <= 0) {
-              endGame();
+              // endGame will be called at the end of loop for safety
             }
           }
-          setScore(scoreRef.current);
-          setLives(livesRef.current);
           return; 
         }
       }
@@ -118,6 +116,14 @@ export default function EggCatcher() {
 
     objectsRef.current = nextObjects;
     setObjects(nextObjects);
+    setScore(scoreRef.current);
+    setLives(livesRef.current);
+    
+    if (livesRef.current <= 0) {
+      endGame();
+      return;
+    }
+
     gameLoopRef.current = requestAnimationFrame(updateGame);
   }, [spawnObject]);
 
@@ -165,14 +171,25 @@ export default function EggCatcher() {
   }, [countdown, updateGame]);
 
   const endGame = async () => {
+    if (gameStateRef.current === 'gameover') return;
     gameStateRef.current = 'gameover';
     setGameState('gameover');
+    setScore(scoreRef.current); // Ensure final score is set
+    
     if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     
     setLoading(true);
-    const result = await completeEggCatcher(scoreRef.current);
-    if (result && result.success) {
-      setCoinsEarned(result.coins_earned);
+    try {
+      const result = await completeEggCatcher(scoreRef.current);
+      if (result && result.success) {
+        setCoinsEarned(result.coins_earned);
+      } else {
+        // Fallback to score if RPC fails or is slow
+        setCoinsEarned(scoreRef.current);
+      }
+    } catch (err) {
+      console.error("Failed to complete game:", err);
+      setCoinsEarned(scoreRef.current);
     }
     setLoading(false);
   };
@@ -329,31 +346,56 @@ export default function EggCatcher() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              <h1 className="game-title">Game Over!</h1>
-              
-              <div className="game-summary">
-                <div className="summary-item">
-                  <span className="summary-label">Final Score</span>
-                  <span className="summary-value">{score}</span>
-                </div>
-                <div className="summary-item">
-                  <span className="summary-label">Coins Earned</span>
-                  <span className="summary-value highlight">
-                    {loading ? '...' : `+${coinsEarned}`}
-                  </span>
-                </div>
-              </div>
-
-              <button className="restart-btn" onClick={startGame} disabled={loading}>
-                PLAY AGAIN
-              </button>
-              <button 
-                className="claim-btn" 
-                onClick={() => navigate('/games')}
-                style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', marginTop: '15px' }}
+              <motion.div 
+                className="game-over-card glass-panel"
+                initial={{ scale: 0.8, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                transition={{ type: "spring", damping: 15 }}
               >
-                BACK TO HUB
-              </button>
+                <h1 className="game-over-title">Game Over</h1>
+                
+                <div className="game-over-stats">
+                  <div className="stat-group">
+                    <span className="stat-label">FINAL SCORE</span>
+                    <motion.span 
+                      className="stat-value"
+                      initial={{ scale: 1 }}
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                    >
+                      {score}
+                    </motion.span>
+                  </div>
+
+                  <div className="reward-section">
+                    <div className="reward-glow" />
+                    <div className="reward-content">
+                      <div className="reward-icon-wrapper">
+                        <img src="/coin.png" alt="coin" className="reward-coin-img" onError={(e) => e.currentTarget.src = 'https://cryptologos.cc/logos/tether-usdt-logo.svg'} />
+                      </div>
+                      <div className="reward-info">
+                        <span className="reward-label">TOTAL EARNED</span>
+                        <span className="reward-amount">
+                          {loading ? '...' : `+${coinsEarned || score}`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="game-over-actions">
+                  <button className="restart-btn-v2" onClick={startGame} disabled={loading}>
+                    < Zap size={20} fill="currentColor" />
+                    PLAY AGAIN
+                  </button>
+                  <button 
+                    className="hub-btn-v2" 
+                    onClick={() => navigate('/games')}
+                  >
+                    BACK TO HUB
+                  </button>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
