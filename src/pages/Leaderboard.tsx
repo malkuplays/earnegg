@@ -53,7 +53,10 @@ export default function Leaderboard() {
                 <div className="podium-badge">2</div>
               </div>
               <span className="podium-name">{top3[1].username || 'Anonymous'}</span>
-              <span className="podium-balance">{top3[1].balance.toLocaleString()}</span>
+              <span className="podium-balance">
+                <span className="coin-mini">💰</span> {top3[1].balance.toLocaleString()}
+              </span>
+              <span className="podium-inr">₹{(top3[1].balance / 1000).toFixed(2)}</span>
             </motion.div>
           )}
 
@@ -70,7 +73,10 @@ export default function Leaderboard() {
                 <div className="podium-badge">1</div>
               </div>
               <span className="podium-name">{top3[0].username || 'Anonymous'}</span>
-              <span className="podium-balance">{top3[0].balance.toLocaleString()}</span>
+              <span className="podium-balance">
+                <span className="coin-mini">💰</span> {top3[0].balance.toLocaleString()}
+              </span>
+              <span className="podium-inr">₹{(top3[0].balance / 1000).toFixed(2)}</span>
             </motion.div>
           )}
 
@@ -87,7 +93,10 @@ export default function Leaderboard() {
                 <div className="podium-badge">3</div>
               </div>
               <span className="podium-name">{top3[2].username || 'Anonymous'}</span>
-              <span className="podium-balance">{top3[2].balance.toLocaleString()}</span>
+              <span className="podium-balance">
+                <span className="coin-mini">💰</span> {top3[2].balance.toLocaleString()}
+              </span>
+              <span className="podium-inr">₹{(top3[2].balance / 1000).toFixed(2)}</span>
             </motion.div>
           )}
         </div>
@@ -121,9 +130,14 @@ export default function Leaderboard() {
                   <span className="player-name">
                     {player.username || 'Anonymous'} {isMe && '(You)'}
                   </span>
-                  <div className="player-balance">
-                    <span className="coin-mini">💰</span>
-                    {player.balance.toLocaleString()}
+                  <div className="player-balance-row">
+                    <div className="player-balance">
+                      <span className="coin-mini">💰</span>
+                      {player.balance.toLocaleString()}
+                    </div>
+                    <div className="player-inr">
+                      ₹{(player.balance / 1000).toFixed(2)}
+                    </div>
                   </div>
                 </div>
                 <ChevronRight size={16} className="text-dim opacity-30" />

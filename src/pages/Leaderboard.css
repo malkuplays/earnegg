@@ -104,11 +104,18 @@
 
 .podium-balance {
   font-size: 11px;
-  color: var(--accent-primary);
+  color: var(--text-dim);
   font-weight: 600;
-  background: rgba(240, 201, 41, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   padding: 2px 8px;
   border-radius: 8px;
+}
+
+.podium-inr {
+  font-size: 12px;
+  color: var(--accent-primary);
+  font-weight: 700;
+  margin-top: 2px;
 }
 
 /* LIST SECTION */
@@ -180,12 +187,24 @@
   color: var(--text-primary);
 }
 
+.player-balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .player-balance {
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: 13px;
   color: var(--text-dim);
+}
+
+.player-inr {
+  font-size: 13px;
+  color: var(--accent-primary);
+  font-weight: 600;
 }
 
 .coin-mini {
