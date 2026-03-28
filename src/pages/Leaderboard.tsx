@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { Trophy, Medal, Award } from 'lucide-react';
+import { Trophy, Medal, Award, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import './Leaderboard.css';
@@ -27,26 +27,81 @@ export default function Leaderboard() {
     fetchLeaderboard();
   }, []);
 
-  const getRankIcon = (index: number) => {
-    if (index === 0) return <Trophy size={24} className="text-warning" />;
-    if (index === 1) return <Medal size={24} className="text-secondary" style={{ color: '#C0C0C0' }} />;
-    if (index === 2) return <Award size={24} className="text-secondary" style={{ color: '#cd7f32' }} />;
-    return <span className="rank-number">#{index + 1}</span>;
-  };
+  const top3 = players.slice(0, 3);
+  const theRest = players.slice(3);
 
   return (
     <div className="page-container leaderboard-page animate-fade-in">
       <div className="page-header center-header text-center">
-        <Trophy size={48} className="text-warning mx-auto" style={{ margin: '0 auto 16px' }} />
-        <h1 className="h1">Top Miners</h1>
-        <p className="body text-dim">The richest players in Earnegg.</p>
+        <Trophy size={48} className="text-warning mx-auto trophy-glow" />
+        <h1 className="h1 gold-gradient-text mt-3">Top Miners</h1>
+        <p className="body text-dim">The elite of Earnegg community.</p>
       </div>
+
+      {!loading && top3.length > 0 && (
+        <div className="podium-container">
+          {/* Rank 2 */}
+          {top3[1] && (
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="podium-item rank-2"
+            >
+              <div className="podium-avatar-wrap">
+                <Medal size={32} color="#C0C0C0" />
+                <div className="podium-badge">2</div>
+              </div>
+              <span className="podium-name">{top3[1].username || 'Anonymous'}</span>
+              <span className="podium-balance">{top3[1].balance.toLocaleString()}</span>
+            </motion.div>
+          )}
+
+          {/* Rank 1 */}
+          {top3[0] && (
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="podium-item rank-1"
+            >
+              <div className="podium-avatar-wrap">
+                <Trophy size={40} color="#f0c929" />
+                <div className="podium-badge">1</div>
+              </div>
+              <span className="podium-name">{top3[0].username || 'Anonymous'}</span>
+              <span className="podium-balance">{top3[0].balance.toLocaleString()}</span>
+            </motion.div>
+          )}
+
+          {/* Rank 3 */}
+          {top3[2] && (
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="podium-item rank-3"
+            >
+              <div className="podium-avatar-wrap">
+                <Award size={32} color="#CD7F32" />
+                <div className="podium-badge">3</div>
+              </div>
+              <span className="podium-name">{top3[2].username || 'Anonymous'}</span>
+              <span className="podium-balance">{top3[2].balance.toLocaleString()}</span>
+            </motion.div>
+          )}
+        </div>
+      )}
 
       <div className="leaderboard-list">
         {loading ? (
-          <p className="text-center text-dim mt-4">Loading top players...</p>
+          <div className="text-center py-10">
+            <div className="loading-spinner"></div>
+            <p className="text-dim mt-4">Calculatings rankings...</p>
+          </div>
         ) : (
-          players.map((player, index) => {
+          theRest.map((player, index) => {
+            const actualRank = index + 4;
             const isMe = user?.id?.toString() === player.id;
             return (
               <motion.div 
@@ -57,14 +112,21 @@ export default function Leaderboard() {
                 className={`leaderboard-card glass-panel ${isMe ? 'is-me' : ''}`}
               >
                 <div className="rank-wrap">
-                  {getRankIcon(index)}
+                  #{actualRank}
+                </div>
+                <div className="player-avatar">
+                  {(player.username || 'A').charAt(0).toUpperCase()}
                 </div>
                 <div className="player-info">
-                  <span className="player-name">{player.username || 'Anonymous'} {isMe && '(You)'}</span>
+                  <span className="player-name">
+                    {player.username || 'Anonymous'} {isMe && '(You)'}
+                  </span>
+                  <div className="player-balance">
+                    <span className="coin-mini">💰</span>
+                    {player.balance.toLocaleString()}
+                  </div>
                 </div>
-                <div className="player-balance font-bold">
-                  {player.balance.toLocaleString()} <span className="coin-mini">💰</span>
-                </div>
+                <ChevronRight size={16} className="text-dim opacity-30" />
               </motion.div>
             );
           })
