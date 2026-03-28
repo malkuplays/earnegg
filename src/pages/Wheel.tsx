@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
-import { hapticFeedback } from '../lib/telegram';
+import { hapticFeedback, showAlert } from '../lib/telegram';
 import { showAd } from '../lib/adsgram';
 import { ArrowLeft, Zap, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -68,7 +68,7 @@ export default function Wheel() {
       }, 3000);
     } else {
       setSpinning(false);
-      alert(data.message || 'Error spinning wheel');
+      showAlert(data.message || 'Error spinning wheel');
     }
   };
 
@@ -153,7 +153,7 @@ export default function Wheel() {
               const success = await showAd(adsBlockId, 'rewarded');
               if (success) {
                 await addExtraSpin();
-                alert('Extra spin granted!');
+                showAlert('Extra spin granted!');
               }
               setSpinning(false);
             }}

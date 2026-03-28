@@ -40,3 +40,16 @@ export const hapticFeedback = (type: 'light' | 'medium' | 'heavy' | 'rigid' | 's
     // Ignored
   }
 };
+
+export const showAlert = (message: string) => {
+  try {
+    const app = getNativeWebApp();
+    if (app?.showAlert) {
+      app.showAlert(message);
+    } else {
+      alert(message);
+    }
+  } catch (err) {
+    alert(message);
+  }
+};

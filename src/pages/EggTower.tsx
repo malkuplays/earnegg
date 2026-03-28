@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Zap, Coins } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { hapticFeedback } from '../lib/telegram';
+import { hapticFeedback, showAlert } from '../lib/telegram';
 import { showAd } from '../lib/adsgram';
 import './EggTower.css';
 
@@ -160,11 +160,11 @@ export default function EggTower() {
 
   const startGame = async () => {
     if (balance < 1000) {
-      alert('Not enough coins! (Need 1000)');
+      showAlert('Not enough coins! (Need 1000)');
       return;
     }
     if (energy < 500) {
-      alert('Not enough energy! (Need 500)');
+      showAlert('Not enough energy! (Need 500)');
       return;
     }
 
@@ -172,12 +172,12 @@ export default function EggTower() {
     try {
       const res = await startEggTower();
       if (!res.success) {
-        alert(res.message || 'Failed to start game');
+        showAlert(res.message || 'Failed to start game');
         setLoading(false);
         return;
       }
     } catch (err) {
-      alert('Error starting game');
+      showAlert('Error starting game');
       setLoading(false);
       return;
     }

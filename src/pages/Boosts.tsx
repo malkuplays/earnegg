@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import AdsterraBanner from '../components/AdsterraBanner';
 import AdsterraNative from '../components/AdsterraNative';
 import { showAd } from '../lib/adsgram';
+import { showAlert } from '../lib/telegram';
 import './Boosts.css';
 
 export default function Boosts() {
@@ -152,7 +153,7 @@ export default function Boosts() {
                 const result = await showAd(adsBlockId, 'rewarded');
                 if (result) {
                   await refillEnergy();
-                  alert('Energy refilled!');
+                  showAlert('Energy refilled!');
                 }
                 setLoading(null);
               }}

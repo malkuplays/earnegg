@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Zap, Heart, Coins } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { hapticFeedback } from '../lib/telegram';
+import { hapticFeedback, showAlert } from '../lib/telegram';
 import { showAd } from '../lib/adsgram';
 import FloatingAssets from '../components/FloatingAssets';
 import './EggCatcher.css';
@@ -155,7 +155,7 @@ export default function EggCatcher() {
 
   const startGame = () => {
     if (energy < 500) {
-      alert('Not enough energy! You need at least 500 energy to play.');
+      showAlert('Not enough energy! You need at least 500 energy to play.');
       return;
     }
     
