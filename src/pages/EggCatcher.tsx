@@ -345,8 +345,14 @@ export default function EggCatcher() {
               className="start-overlay"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, y: -20 }}
             >
+              <button 
+                className="back-btn-start" 
+                onClick={() => navigate('/games')}
+              >
+                <ArrowLeft size={24} />
+              </button>
               <h1 className="game-title">Egg Catcher</h1>
               <p className="game-description">Catch the eggs, avoid the bombs!</p>
               

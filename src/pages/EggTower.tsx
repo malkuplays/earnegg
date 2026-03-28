@@ -363,6 +363,12 @@ export default function EggTower() {
 
           {gameState === 'start' && (
             <motion.div className="start-overlay">
+              <button 
+                className="back-btn-start" 
+                onClick={() => navigate('/games')}
+              >
+                <ArrowLeft size={24} />
+              </button>
               <h1 className="game-title">Egg Tower</h1>
               <p className="game-description">Stack eggs with precision. Avoid the wobble!</p>
               

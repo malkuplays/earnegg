@@ -8,6 +8,30 @@
   position: relative;
 }
 
+.back-btn-start {
+  position: absolute;
+  top: 55px; /* Alignment with notch */
+  left: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  z-index: 1001;
+  transition: all 0.2s;
+}
+
+.back-btn-start:active {
+  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .game-canvas-container {
   flex: 1;
   position: relative;
