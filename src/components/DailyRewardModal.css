@@ -161,15 +161,45 @@
 
 .claim-btn-premium {
   width: 100%;
-  background: linear-gradient(135deg, #f0c929 0%, #d4a017 100%);
+  padding: 16px;
+  background: var(--accent-primary);
   color: #000;
-  padding: 18px;
-  border-radius: 18px;
+  border: none;
+  border-radius: 12px;
   font-weight: 800;
-  font-size: 1rem;
-  letter-spacing: 0.05em;
-  box-shadow: 0 10px 20px rgba(240, 201, 41, 0.2);
-  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(240, 201, 41, 0.3);
+}
+
+.double-btn-premium {
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--accent-primary);
+  border: 1px solid rgba(240, 201, 41, 0.3);
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.double-btn-premium:hover:not(:disabled) {
+  background: rgba(240, 201, 41, 0.1);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.double-btn-premium:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .claim-btn-premium:active {

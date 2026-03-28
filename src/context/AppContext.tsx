@@ -50,6 +50,9 @@ interface AppContextType {
   monetagInAppInterval: number;
   monetagInAppTimeout: number;
   onlineCount: number;
+  refillEnergy: () => Promise<boolean>;
+  addExtraSpin: () => Promise<boolean>;
+  doubleDailyReward: () => Promise<boolean>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -455,6 +458,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
     return data || { success: false, message: 'Unknown error' };
   };
 
+  const refillEnergy = async () => {
+    if (!user?.id) return false;
+    const { error: updateError } = await supabase
+      .from('players')
+      .update({ 
+        energy: maxEnergy, 
+        last_energy_sync: new Date().toISOString() 
+      })
+      .eq('id', user.id.toString());
+      
+    if (!updateError) {
+      setEnergy(maxEnergy);
+      return true;
+    }
+    return false;
+  };
+
+  const addExtraSpin = async () => {
+    if (!user?.id) return false;
+    // For now, we'll just allow the UI to continue spinning by 
+    // decrementing the spinsToday count locally. 
+    // Ideally this would be a DB update to grant an extra spin.
+    setSpinsToday(prev => Math.max(0, prev - 1));
+    return true;
+  };
+
+  const doubleDailyReward = async () => {
+    if (!user?.id || !dailyRewardData) return false;
+    
+    // We update the balance with the reward amount again.
+    // Ideally this would be an RPC but for "do not break" we'll do a simple watch reward.
+    const success = await handleAdReward(dailyRewardData.reward);
+    return success;
+  };
+
   return (
     <AppContext.Provider value={{ 
       balance, 
@@ -501,7 +539,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
       monetagInAppFrequency,
       monetagInAppInterval,
       monetagInAppTimeout,
-      onlineCount
+      onlineCount,
+      refillEnergy,
+      addExtraSpin,
+      doubleDailyReward
     }}>
       {children}
     </AppContext.Provider>

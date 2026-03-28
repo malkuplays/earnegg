@@ -353,8 +353,37 @@
 .game-over-stats {
   display: flex;
   flex-direction: column;
-  gap: 35px;
-  margin-bottom: 45px;
+  gap: 25px; /* Reduced gap to accommodate new button */
+  margin-bottom: 35px;
+}
+
+.double-reward-ad-btn {
+  width: 100%;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--accent-primary);
+  border: 1px solid rgba(240, 201, 41, 0.3);
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: -10px;
+}
+
+.double-reward-ad-btn:hover:not(:disabled) {
+  background: rgba(240, 201, 41, 0.1);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.double-reward-ad-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .stat-group {

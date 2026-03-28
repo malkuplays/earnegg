@@ -24,7 +24,13 @@ interface Popup {
 }
 
 export default function EggCatcher() {
-  const { energy, completeEggCatcher, interstitialBlockId } = useApp();
+  const { 
+    energy, 
+    completeEggCatcher, 
+    interstitialBlockId, 
+    adsBlockId, 
+    handleAdReward 
+  } = useApp();
   const navigate = useNavigate();
   
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameover'>('start');
@@ -37,6 +43,7 @@ export default function EggCatcher() {
   const [isShaking, setIsShaking] = useState(false);
   const [coinsEarned, setCoinsEarned] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isDoubled, setIsDoubled] = useState(false);
 
   const gameLoopRef = useRef<number | null>(null);
   const gameStateRef = useRef<'start' | 'playing' | 'gameover'>('start');
@@ -165,6 +172,7 @@ export default function EggCatcher() {
     setGameState('playing');
     gameStateRef.current = 'start'; // Keep internal state 'start' until countdown finishes
     setCountdown(3);
+    setIsDoubled(false);
     hapticFeedback('medium');
   };
 
@@ -412,11 +420,33 @@ export default function EggCatcher() {
                       <div className="reward-info">
                         <span className="reward-label">COINS EARNED</span>
                         <span className="reward-amount">
-                          {loading ? '...' : `+${coinsEarned || score}`}
+                          {loading ? '...' : `+${isDoubled ? (coinsEarned * 2) : coinsEarned}`}
                         </span>
                       </div>
                     </div>
                   </div>
+
+                  {!isDoubled && adsBlockId && coinsEarned > 0 && (
+                    <button 
+                      className="double-reward-ad-btn glass-panel"
+                      disabled={loading}
+                      onClick={async () => {
+                        setLoading(true);
+                        const success = await showAd(adsBlockId, 'rewarded');
+                        if (success) {
+                          const rewardSuccess = await handleAdReward(coinsEarned);
+                          if (rewardSuccess) {
+                            setIsDoubled(true);
+                            hapticFeedback('success');
+                          }
+                        }
+                        setLoading(false);
+                      }}
+                    >
+                      <Zap size={18} fill="currentColor" />
+                      Double My Coins (2X)
+                    </button>
+                  )}
                 </div>
 
                 <div className="game-over-actions">

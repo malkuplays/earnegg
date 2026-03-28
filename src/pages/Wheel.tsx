@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
 import { showAd } from '../lib/adsgram';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import FloatingAssets from '../components/FloatingAssets';
 import './Wheel.css';
@@ -11,7 +11,8 @@ import './Wheel.css';
 export default function Wheel() {
   const { 
     spinWheel, wheelRewards, 
-    spinsToday, freeSpinsPerDay, adsBlockId 
+    spinsToday, freeSpinsPerDay, adsBlockId,
+    addExtraSpin
   } = useApp();
   const navigate = useNavigate();
   const [spinning, setSpinning] = useState(false);
@@ -139,8 +140,26 @@ export default function Wheel() {
           onClick={handleSpin}
           disabled={!canSpin}
         >
-          {spinning ? 'Spinning...' : canSpin ? 'SPIN NOW' : 'No spins left'}
+          {spinning ? 'Spinning...' : canSpin ? 'SPIN NOW' : 'Daily spins exhausted'}
         </button>
+
+        {!canSpin && !spinning && adsBlockId && (
+          <button 
+            className="extra-spin-ad-btn glass-panel"
+            onClick={async () => {
+              setSpinning(true);
+              const success = await showAd(adsBlockId, 'rewarded');
+              if (success) {
+                await addExtraSpin();
+                alert('Extra spin granted!');
+              }
+              setSpinning(false);
+            }}
+          >
+            <Zap size={20} className="text-secondary" />
+            Watch Ad for Extra Spin
+          </button>
+        )}
       </div>
 
       <AnimatePresence>

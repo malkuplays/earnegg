@@ -5,6 +5,7 @@ import { Zap, Battery, Timer, Bot, ChevronRight, UserPlus, Gift, Cpu } from 'luc
 import { motion } from 'framer-motion';
 import AdsterraBanner from '../components/AdsterraBanner';
 import AdsterraNative from '../components/AdsterraNative';
+import { showAd } from '../lib/adsgram';
 import './Boosts.css';
 
 export default function Boosts() {
@@ -18,7 +19,9 @@ export default function Boosts() {
     referralBonusLevel,
     dailyRewardLevel,
     user, 
-    refreshStats 
+    refreshStats,
+    adsBlockId,
+    refillEnergy
   } = useApp();
 
   const [loading, setLoading] = useState<string | null>(null);
@@ -120,6 +123,44 @@ export default function Boosts() {
       <AdsterraBanner />
 
       <div className="boosts-list">
+        {/* Ad Rewarded Energy Refill */}
+        <motion.div 
+          className="boost-card glass-panel ad-boost"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="boost-icon-wrap ad-icon">
+            <Zap size={24} className="text-secondary" />
+          </div>
+          <div className="boost-info">
+            <h3 className="h3 title-row">
+              Free Energy Refill
+              <span className="level-badge ads-label">ADS</span>
+            </h3>
+            <p className="caption text-dim">Watch a short ad to refill your energy instantly.</p>
+            <div className="cost-row">
+              <span className="text-success font-bold">FREE</span>
+            </div>
+          </div>
+          <div className="boost-action">
+            <button 
+              className="buy-btn ad-btn"
+              disabled={loading === 'energy_ad'}
+              onClick={async () => {
+                if (!adsBlockId) return;
+                setLoading('energy_ad');
+                const result = await showAd(adsBlockId, 'rewarded');
+                if (result) {
+                  await refillEnergy();
+                  alert('Energy refilled!');
+                }
+                setLoading(null);
+              }}
+            >
+              {loading === 'energy_ad' ? '...' : <ChevronRight size={20} />}
+            </button>
+          </div>
+        </motion.div>
         {upgrades.map((upgrade) => {
           const isMaxxed = upgrade.level === upgrade.maxLevel || upgrade.level === 'Active';
           const cantAfford = balance < upgrade.cost && !isMaxxed;

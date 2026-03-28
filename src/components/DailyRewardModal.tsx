@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, CheckCircle2, Circle, TrendingUp } from 'lucide-react';
+import { Sparkles, CheckCircle2, Circle, TrendingUp, Zap } from 'lucide-react';
+import { useApp } from '../context/AppContext';
+import { showAd } from '../lib/adsgram';
 import './DailyRewardModal.css';
 
 interface DailyRewardModalProps {
@@ -9,6 +12,10 @@ interface DailyRewardModalProps {
 }
 
 export default function DailyRewardModal({ reward, streak, onClose }: DailyRewardModalProps) {
+  const { adsBlockId, doubleDailyReward } = useApp();
+  const [loading, setLoading] = useState(false);
+  const [isDoubled, setIsDoubled] = useState(false);
+
   // Calculate day in 7-day cycle (1-7)
   const dayInCycle = ((streak - 1) % 7) + 1;
 
@@ -80,23 +87,43 @@ export default function DailyRewardModal({ reward, streak, onClose }: DailyRewar
               <div className="reward-glow" />
             </div>
             <div className="reward-details">
-              <div className="reward-label">You Won</div>
-              <div className="reward-value">+{reward.toLocaleString()}</div>
+              <div className="reward-label px-2 py-1 rounded-full text-[10px] font-bold tracking-widest bg-yellow-400/20 text-yellow-400 mb-1 inline-block border border-yellow-400/30 uppercase">YOU WON</div>
+              <div className="reward-value">+{isDoubled ? (reward * 2).toLocaleString() : reward.toLocaleString()}</div>
               <div className="reward-currency-label">COINS</div>
             </div>
           </motion.div>
 
-          <motion.div className="modal-footer" variants={itemVariants}>
-            <p className="caption text-dim mb-4">
-              <TrendingUp size={12} className="inline mr-1" />
-              Keep your streak alive to get bigger rewards!
-            </p>
+          <motion.div className="modal-footer flex flex-col gap-3" variants={itemVariants}>
+            {!isDoubled && adsBlockId && (
+              <button 
+                className="double-btn-premium"
+                disabled={loading}
+                onClick={async () => {
+                  setLoading(true);
+                  const success = await showAd(adsBlockId, 'rewarded');
+                  if (success) {
+                    const doubled = await doubleDailyReward();
+                    if (doubled) setIsDoubled(true);
+                  }
+                  setLoading(false);
+                }}
+              >
+                <Zap size={18} fill="currentColor" />
+                <span>DOUBLE REWARD (2X)</span>
+              </button>
+            )}
+
             <button 
               className="claim-btn-premium"
               onClick={onClose}
+              disabled={loading}
             >
-              CLAIM REWARD
+              {isDoubled ? 'CLAIM 2X BONUS' : 'CLAIM REWARD'}
             </button>
+            <p className="caption text-dim mt-1">
+              <TrendingUp size={12} className="inline mr-1" />
+              Keep your streak alive for bigger rewards!
+            </p>
           </motion.div>
         </motion.div>
       </div>

@@ -22,7 +22,15 @@ interface Popup {
 }
 
 export default function EggTower() {
-  const { balance, energy, startEggTower, completeEggTower, interstitialBlockId } = useApp();
+  const { 
+    balance, 
+    energy, 
+    startEggTower, 
+    completeEggTower, 
+    interstitialBlockId, 
+    adsBlockId, 
+    handleAdReward 
+  } = useApp();
   const navigate = useNavigate();
   
   const [gameState, setGameState] = useState<'start' | 'playing' | 'gameover'>('start');
@@ -34,6 +42,7 @@ export default function EggTower() {
   const [fallingEgg, setFallingEgg] = useState<{ x: number, y: number } | null>(null);
   const [popups, setPopups] = useState<Popup[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isDoubled, setIsDoubled] = useState(false);
 
   const gameLoopRef = useRef<number | null>(null);
   const gameStateRef = useRef<'start' | 'playing' | 'gameover'>('start');
@@ -187,6 +196,7 @@ export default function EggTower() {
     setGameState('playing');
     gameStateRef.current = 'start'; // Keep it start until countdown ends
     setCountdown(3);
+    setIsDoubled(false);
     hapticFeedback('medium');
     lastTimeRef.current = 0; // Reset time
   };
@@ -414,13 +424,36 @@ export default function EggTower() {
                             </div>
                             <div className="net-balance-container">
                               <span className="net-label">NET BALANCE</span>
-                              <span className="net-amount" style={{ color: score >= 1000 ? '#4ade80' : '#ff4d4d' }}>
-                                {loading ? '...' : `${score >= 1000 ? '+' : ''}${score - 1000}`}
+                              <span className="net-amount" style={{ color: (isDoubled ? score * 2 : score) >= 1000 ? '#4ade80' : '#ff4d4d' }}>
+                                {loading ? '...' : `${(isDoubled ? score * 2 : score) >= 1000 ? '+' : ''}${(isDoubled ? score * 2 : score) - 1000}`}
                               </span>
                             </div>
                         </div>
                     </div>
                   </div>
+
+                  {!isDoubled && adsBlockId && score > 0 && (
+                    <button 
+                      className="double-reward-ad-btn glass-panel"
+                      disabled={loading}
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        setLoading(true);
+                        const success = await showAd(adsBlockId, 'rewarded');
+                        if (success) {
+                          const rewardSuccess = await handleAdReward(score);
+                          if (rewardSuccess) {
+                            setIsDoubled(true);
+                            hapticFeedback('success');
+                          }
+                        }
+                        setLoading(false);
+                      }}
+                    >
+                      <Zap size={18} fill="currentColor" />
+                      Double My Coins (2X)
+                    </button>
+                  )}
                 </div>
 
                 <div className="game-over-actions">
