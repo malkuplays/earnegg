@@ -477,11 +477,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
 
   const addExtraSpin = async () => {
     if (!user?.id) return false;
-    // For now, we'll just allow the UI to continue spinning by 
-    // decrementing the spinsToday count locally. 
-    // Ideally this would be a DB update to grant an extra spin.
-    setSpinsToday(prev => Math.max(0, prev - 1));
-    return true;
+    const { data, error } = await supabase.rpc('grant_extra_spin', { 
+      p_telegram_id: user.id.toString() 
+    });
+    
+    if (!error && data?.success) {
+      setSpinsToday(prev => Math.max(0, prev - 1));
+      return true;
+    }
+    return false;
   };
 
   const doubleDailyReward = async () => {
