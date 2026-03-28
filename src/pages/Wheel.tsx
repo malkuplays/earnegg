@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { hapticFeedback } from '../lib/telegram';
 import { showAd } from '../lib/adsgram';
-import { ArrowLeft, Zap } from 'lucide-react';
+import { ArrowLeft, Zap, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import FloatingAssets from '../components/FloatingAssets';
+import coinBag from '../assets/coin_bag.png';
+import energyBolt from '../assets/energy_bolt.png';
 import './Wheel.css';
 
 export default function Wheel() {
@@ -171,21 +173,35 @@ export default function Wheel() {
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="reward-modal glass-panel"
-              initial={{ scale: 0.5, y: 50 }}
-              animate={{ scale: 1, y: 0 }}
+              className="reward-modal premium-modal shadow-glow"
+              initial={{ scale: 0.5, y: 50, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             >
               <div className="reward-glow" />
-              <h2 className="reward-title">Congratulations!</h2>
-              <div className="reward-visual">
-                <div className="reward-icon">
-                  {result.type === 'coins' ? '💰' : '⚡'}
-                </div>
-                <div className="reward-amount">+{result.amount.toLocaleString()}</div>
-                <div className="reward-type">{result.type.toUpperCase()}</div>
+              <div className="premium-badge mb-2">
+                <Sparkles size={16} className="text-gold" />
+                <span>NEW REWARD</span>
               </div>
-              <button className="claim-btn" onClick={() => setShowReward(false)}>
-                Awesome!
+              <h2 className="reward-title gold-gradient-text">Congratulations!</h2>
+              
+              <div className="reward-visual">
+                <div className="reward-icon-wrapper">
+                  <img 
+                    src={result.type === 'coins' ? coinBag : energyBolt} 
+                    alt={result.type} 
+                    className="reward-asset-img" 
+                  />
+                  <div className="reward-glow-soft" />
+                </div>
+                <div className="reward-details">
+                  <div className="reward-amount">+{result.amount.toLocaleString()}</div>
+                  <div className="reward-type">{result.type.toUpperCase()}</div>
+                </div>
+              </div>
+
+              <button className="claim-btn-premium w-full mt-4" onClick={() => setShowReward(false)}>
+                AWESOME!
               </button>
             </motion.div>
           </motion.div>
