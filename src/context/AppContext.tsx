@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { getTelegramStartParam } from '../lib/telegram';
 import { supabase } from '../lib/supabase';
+import { showAd } from '../lib/adsgram';
 
 interface DailyRewardData {
   reward: number;
@@ -91,6 +92,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
   const [onlineCount, setOnlineCount] = useState<number>(0);
   const [onlineMin, setOnlineMin] = useState<number>(850);
   const [onlineMax, setOnlineMax] = useState<number>(1240);
+  const [tapsSinceAd, setTapsSinceAd] = useState(0);
 
   const maxEnergy = 1000 + (energyLimitLevel - 1) * 500;
   
@@ -303,12 +305,33 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
     }
   }, [user, maxEnergy]);
 
-  const handleTap = useCallback(() => {
+  const handleTap = useCallback(async () => {
     if (energy > 0) {
       setBalance(prev => prev + (1 * multitapLevel));
       setEnergy(prev => prev - 1);
       
       pendingTaps.current += 1;
+      
+      const newTapsSinceAd = tapsSinceAd + 1;
+      if (newTapsSinceAd >= 100) {
+        setTapsSinceAd(0);
+        if (adsBlockId) {
+          console.log('Triggering Adsgram Rewarded Ad after 100 taps');
+          const success = await showAd(adsBlockId, 'rewarded');
+          if (success) {
+            // Reward the user for watching the ad
+            const { data } = await supabase.rpc('reward_ad_watch', {
+              p_telegram_id: user?.id?.toString(),
+              p_reward_amount: rewardAmount
+            });
+            if (data?.success) {
+              setBalance(prev => prev + rewardAmount);
+            }
+          }
+        }
+      } else {
+        setTapsSinceAd(newTapsSinceAd);
+      }
       
       // Debounce logic
       if (syncTimeoutRef.current) {
@@ -319,7 +342,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode, initialUser: any
         syncWithDatabase();
       }, 1000);
     }
-  }, [energy, syncWithDatabase]);
+  }, [energy, syncWithDatabase, tapsSinceAd, adsBlockId, user, rewardAmount, multitapLevel]);
 
   const handleAdReward = async (amount: number = 1000) => {
     if (!user?.id) return false;
